@@ -9,8 +9,8 @@ public class User {
     private String email;
     private String uid;
     private String username;
-    private Image profileImg;
-    private List<Event> eventList;
+    private String profileImgUrl;
+    private List<String> eventList;
     private List<Message> chatList;
     private Location location;
     private List<Topic> interestedTopics;
@@ -23,7 +23,7 @@ public class User {
         this.email = email;
         this.uid = uid;
         this.username = username;
-        profileImg  = null;
+        profileImgUrl  = "default.png";
         eventList = new ArrayList<>();
         chatList = new ArrayList<>();
         location = new Location();
@@ -51,19 +51,19 @@ public class User {
         this.username = username;
     }
 
-    public Image getProfileImg() {
-        return profileImg;
+    public String getProfileImg() {
+        return profileImgUrl;
     }
 
-    public void setProfileImg(Image profileImg) {
-        this.profileImg = profileImg;
+    public void setProfileImg(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
     }
 
-    public List<Event> getEventList() {
+    public List<String> getEventList() {
         return eventList;
     }
 
-    public void setEventList(List<Event> eventList) {
+    public void setEventList(List<String> eventList) {
         this.eventList = eventList;
     }
 

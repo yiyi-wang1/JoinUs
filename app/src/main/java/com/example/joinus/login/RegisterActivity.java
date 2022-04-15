@@ -113,6 +113,10 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Please enter password and confirmed password.", Toast.LENGTH_SHORT).show();
             return false;
         }
+        if(password.length() < 6 || confirmedPassword.length() < 6){
+            Toast.makeText(getApplicationContext(),"Password should be at least 6 digit.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if(!password.equals(confirmedPassword)){
             Toast.makeText(getApplicationContext(),"Passwords do not match.", Toast.LENGTH_SHORT).show();
             return false;
@@ -122,13 +126,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     //TODO: need SharePreference
     private void registerUser(String email, String username){
+        String uid = mAuth.getCurrentUser().getUid();
         Map<String, Object> user = new HashMap<>();
         user.put("email", email);
         user.put("username", username);
-        database.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        user.put("uid",uid);
+        database.collection("users").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(DocumentReference documentReference) {
-                User user = new User(email, documentReference.getId(),username);
+            public void onSuccess(Void unused) {
+                User user = new User(email, uid, username);
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

@@ -30,7 +30,9 @@
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintTop_toBottomOf="@+id/login_title"
-       android:layout_marginTop="60dp">
+       android:layout_marginTop="60dp"
+       android:drawableLeft="@drawable/ic_baseline_email_24"
+       android:drawablePadding="5dp">
    </EditText>
 
     <EditText
@@ -43,7 +45,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_email"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/ic_baseline_lock_24"
+        android:drawablePadding="5dp">
     </EditText>
 
     <Button
