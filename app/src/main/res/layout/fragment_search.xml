@@ -1,19 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Search_fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <ImageButton-->
+<!--            android:id="@+id/search_map_btn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="#FFFFFF"-->
+<!--            android:src="@drawable/ic_baseline_map_24"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.05"-->
+<!--            android:contentDescription="Map to see nearby event"></ImageButton>-->
+
+        <EditText
+            android:id="@+id/search_bar"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:hint="Search event here"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            android:layout_marginTop="10dp"></EditText>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:text="search"
+            app:layout_constraintBaseline_toBaselineOf="@+id/search_bar"
+            app:layout_constraintStart_toEndOf="@id/search_bar"></Button>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/search_hot_event_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/search_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hot Events Near You"
+                    android:textSize="30dp"
+                    android:textAlignment="center">
+                </TextView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/search_hot_event_recommend_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/search_event_by_topic_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Events by Topics"
+            android:textSize="30dp"
+            app:layout_constraintTop_toBottomOf="@+id/search_hot_event_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </TextView>
+
+        <include android:id="@+id/search_top1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_event_by_topic_text"
+            android:layout_marginTop="10dp"
+            layout="@layout/topic_recommended">
+        </include>
+
+        <include android:id="@+id/search_top2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_top1"
+            android:layout_marginTop="10dp"
+            layout="@layout/topic_recommended">
+        </include>
+
+        <include android:id="@+id/search_top3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_top2"
+            android:layout_marginTop="10dp"
+            layout="@layout/topic_recommended">
+        </include>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
