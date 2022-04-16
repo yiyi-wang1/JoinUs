@@ -15,123 +15,134 @@
             android:id="@+id/profile_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Pofile"
+            android:textSize="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0"
-            android:layout_marginTop="10dp"
-            android:textSize="30dp"
-            app:layout_constraintHorizontal_bias="0.5"/>
+            app:layout_constraintVertical_bias="0" />
+
+        <ImageButton
+            android:id="@+id/profile_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:src="@drawable/ic_baseline_edit_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintStart_toEndOf="@+id/profile_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.04" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/profile_card"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_marginTop="20dp"
             app:cardCornerRadius="75dp"
             app:cardPreventCornerOverlap="false"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_text"
-            android:layout_marginTop="20dp">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_text">
 
             <ImageView
                 android:id="@+id/profile_userImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/ic_launcher_background"
                 android:clickable="true"
                 android:scaleType="center"
-                android:src="@drawable/ic_launcher_foreground"
-                android:background="@drawable/ic_launcher_background">
-            </ImageView>
+                android:src="@drawable/ic_launcher_foreground"></ImageView>
         </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/profile_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="username: "
-            android:drawableLeft="@drawable/ic_baseline_person_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_card"
             android:layout_marginTop="50dp"
+            android:drawableLeft="@drawable/ic_baseline_person_24"
+            android:text="username: "
             android:textSize="20dp"
-            app:layout_constraintHorizontal_bias="0.5">
-        </TextView>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_card"></TextView>
 
         <TextView
             android:id="@+id/profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="email address: "
-            android:drawableLeft="@drawable/ic_baseline_email_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_username"
             android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/ic_baseline_email_24"
+            android:text="email address: "
             android:textSize="20dp"
-            app:layout_constraintHorizontal_bias="0.5">
-        </TextView>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_username"></TextView>
 
         <TextView
             android:id="@+id/profile_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="location: "
-            android:drawableLeft="@drawable/ic_baseline_location_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_email"
             android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/ic_baseline_location_24"
+            android:text="location: "
             android:textSize="20dp"
-            app:layout_constraintHorizontal_bias="0.5">
-        </TextView>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_email"></TextView>
 
         <TextView
             android:id="@+id/profile_interest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="interests: "
-            android:drawableLeft="@drawable/ic_baseline_interest_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_location"
             android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/ic_baseline_interest_24"
+            android:text="interests: "
             android:textSize="20dp"
-            app:layout_constraintHorizontal_bias="0.5">
-        </TextView>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_location"></TextView>
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/profile_interest_chipGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_interest"
-            android:layout_marginTop="20dp">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_interest">
 
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1">
-            </com.google.android.material.chip.Chip>
+                android:text="test1"
+                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
+
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1">
-            </com.google.android.material.chip.Chip>
+                android:text="test1"
+                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
+
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1">
-            </com.google.android.material.chip.Chip>
+                android:text="test1"
+                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
+
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1">
-            </com.google.android.material.chip.Chip>
+                android:text="test1"
+                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
         </com.google.android.material.chip.ChipGroup>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
