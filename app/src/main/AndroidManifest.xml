@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JoinUs">
         <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".login.RegisterActivity"
             android:exported="false" />
         <activity

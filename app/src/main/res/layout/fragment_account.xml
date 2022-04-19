@@ -55,7 +55,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/ic_launcher_background"
                 android:clickable="true"
-                android:scaleType="center"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_launcher_foreground"></ImageView>
         </androidx.cardview.widget.CardView>
 
@@ -65,6 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:drawableLeft="@drawable/ic_baseline_person_24"
+            android:drawablePadding="10dp"
             android:text="username: "
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -78,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/ic_baseline_email_24"
+            android:drawablePadding="10dp"
             android:text="email address: "
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,6 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/ic_baseline_location_24"
+            android:drawablePadding="10dp"
             android:text="location: "
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,6 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/ic_baseline_interest_24"
+            android:drawablePadding="10dp"
             android:text="interests: "
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +117,7 @@
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/profile_interest_chipGroup"
-            android:layout_width="wrap_content"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -123,26 +127,26 @@
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1"
-                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
+                android:text="test1"></com.google.android.material.chip.Chip>
 
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1"
-                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
+                android:text="test1"></com.google.android.material.chip.Chip>
 
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1"
-                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
+                android:text="test1"></com.google.android.material.chip.Chip>
 
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test1"
-                app:closeIconEnabled="true"></com.google.android.material.chip.Chip>
+                android:text="test1"></com.google.android.material.chip.Chip>
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test1"></com.google.android.material.chip.Chip>
         </com.google.android.material.chip.ChipGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -25,5 +25,4 @@
             android:orientation="horizontal">
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>
