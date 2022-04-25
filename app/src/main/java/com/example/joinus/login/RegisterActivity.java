@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.joinus.MainActivity;
 import com.example.joinus.R;
 import com.example.joinus.User;
+import com.example.joinus.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String username;
 
     private FirebaseAuth mAuth;
-    FirebaseFirestore database;
+    private FirebaseFirestore database;
 
     public final static String TAG = "REGISTER";
 
@@ -124,17 +126,23 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    //TODO: need SharePreference
     private void registerUser(String email, String username){
         String uid = mAuth.getCurrentUser().getUid();
-        Map<String, Object> user = new HashMap<>();
-        user.put("email", email);
-        user.put("username", username);
-        user.put("uid",uid);
+//        Map<String, Object> user = new HashMap<>();
+//        user.put("email", email);
+//        user.put("username", username);
+//        user.put("uid",uid);
+//        user.put("profileImgUrl", Utils.DEFAULTIMAGE);
+//        user.put("eventList",null);
+//        user.put("chatList",null);
+//        user.put("location",null);
+//        user.put("interestedTopics",null);
+//        user.put("verified",false);
+        User user = new User(email,uid,username);
+        
         database.collection("users").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                User user = new User(email, uid, username);
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

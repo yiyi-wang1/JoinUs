@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText password_text;
     Button login_btn;
     TextView register_text;
+    ProgressBar progressBar;
+
     public final static String LOGIN_SUCCESS = "Login Successfully!";
     public final static String LOGIN_FAILED = "Invalid username or password. Please check!";
     public final static String TAG = "REGISTER";
@@ -46,34 +49,38 @@ public class LoginActivity extends AppCompatActivity {
         password_text = findViewById(R.id.login_password);
         login_btn = findViewById(R.id.login_button);
         register_text = findViewById(R.id.login_register_txt);
+        progressBar = findViewById(R.id.login_pb);
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 user_email = email_text.getText().toString().trim();
                 user_password = password_text.getText().toString().trim();
-
-                if(checkDetails(user_email, user_password)){
-                    mAuth.signInWithEmailAndPassword(user_email, user_password)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d(TAG, "signInWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        Toast.makeText(getApplicationContext(),LOGIN_SUCCESS, Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(getApplicationContext(),LOGIN_FAILED, Toast.LENGTH_SHORT).show();
+                    if(checkDetails(user_email, user_password)){
+                        progressBar.setVisibility(View.VISIBLE);
+                        login_btn.setVisibility(View.INVISIBLE);
+                        mAuth.signInWithEmailAndPassword(user_email, user_password)
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            // Sign in success, update UI with the signed-in user's information
+                                            Log.d(TAG, "signInWithEmail:success");
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            Toast.makeText(getApplicationContext(),LOGIN_SUCCESS, Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            // If sign in fails, display a message to the user.
+                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                            Toast.makeText(getApplicationContext(),LOGIN_FAILED, Toast.LENGTH_SHORT).show();
+                                            progressBar.setVisibility(View.INVISIBLE);
+                                            login_btn.setVisibility(View.VISIBLE);
+                                        }
                                     }
-                                }
-                            });
-                }
+                                });
+                    }
             }
         });
 
@@ -86,7 +93,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private boolean checkDetails(String email, String password){
         if(TextUtils.isEmpty(email)){

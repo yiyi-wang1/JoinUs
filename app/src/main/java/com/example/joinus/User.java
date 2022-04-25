@@ -2,6 +2,8 @@ package com.example.joinus;
 
 import android.media.Image;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +12,10 @@ public class User {
     private String uid;
     private String username;
     private String profileImgUrl;
-    private List<String> eventList;
-    private List<Message> chatList;
-    private Location location;
-    private List<Topic> interestedTopics;
+    private List<Event> eventList;
+    private List<String> chatList;
+    private GeoPoint location;
+    private List<String> interestedTopics;
     private boolean verified;
 
     public User() {
@@ -23,10 +25,10 @@ public class User {
         this.email = email;
         this.uid = uid;
         this.username = username;
-        profileImgUrl  = "default.png";
+        profileImgUrl  = Utils.DEFAULTIMAGE;
         eventList = new ArrayList<>();
         chatList = new ArrayList<>();
-        location = new Location();
+        location = null;
         interestedTopics = new ArrayList<>();
         verified = false;
     }
@@ -41,6 +43,10 @@ public class User {
 
     public String getUid() {
         return uid;
+    }
+
+    public void setUid(String uid){
+        this.uid = uid;
     }
 
     public String getUsername() {
@@ -59,35 +65,35 @@ public class User {
         this.profileImgUrl = profileImgUrl;
     }
 
-    public List<String> getEventList() {
+    public List<Event> getEventList() {
         return eventList;
     }
 
-    public void setEventList(List<String> eventList) {
+    public void setEventList(List<Event> eventList) {
         this.eventList = eventList;
     }
 
-    public List<Message> getChatList() {
+    public List<String> getChatList() {
         return chatList;
     }
 
-    public void setChatList(List<Message> chatList) {
+    public void setChatList(List<String> chatList) {
         this.chatList = chatList;
     }
 
-    public Location getLocation() {
+    public GeoPoint getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(GeoPoint location) {
         this.location = location;
     }
 
-    public List<Topic> getInterestedTopics() {
+    public List<String> getInterestedTopics() {
         return interestedTopics;
     }
 
-    public void setInterestedTopics(List<Topic> interestedTopics) {
+    public void setInterestedTopics(List<String> interestedTopics) {
         this.interestedTopics = interestedTopics;
     }
 
