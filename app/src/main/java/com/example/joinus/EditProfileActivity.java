@@ -13,12 +13,12 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.joinus.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
@@ -45,7 +45,6 @@ public class EditProfileActivity extends AppCompatActivity {
     public static final String TAG = "Edit Activity";
 
     private FirebaseAuth mAuth;
-    private FirebaseStorage storage;
     private User currentUser;
     private String uid;
     private Uri updateImgUri;
@@ -133,7 +132,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 username.setText(currentUser.getUsername());
                 Picasso.get().load(currentUser.getProfileImg()).into(profileImage);
 
-
                 for(String topic : Utils.TOPICS){
                     addChip(topic);
                 }
@@ -145,7 +143,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void updateProfileImg(){
         //Upload image to firestorage
-        storage = FirebaseStorage.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference reference = storage.getReference();
         StorageReference profileReference = reference.child("images/" + currentUser.getUid());
 
@@ -161,23 +159,25 @@ public class EditProfileActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),"Cannot Upload", Toast.LENGTH_SHORT);
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    profileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
-                        public void onSuccess(Uri uri) {
-                            updateImgUri = uri;
-                            Toast.makeText(getApplicationContext(),"Set Profile Image successfully!", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG,uri.toString());
-                            isLoading = false;
-                            pb.setVisibility(View.INVISIBLE);
-                            save.setClickable(true);
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            profileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    updateImgUri = uri;
+                                    Toast.makeText(getApplicationContext(),"Set Profile Image successfully!", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG,uri.toString());
+                                    isLoading = false;
+                                    pb.setVisibility(View.INVISIBLE);
+                                    save.setClickable(true);
+                                }
+                            });
                         }
-                    });
-                }
             });
         }
     }
+
+
 
     private void updateProfile() {
         String updateName = username.getText().toString().trim();

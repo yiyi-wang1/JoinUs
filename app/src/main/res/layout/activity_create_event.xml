@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateEventActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/create_event_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create A New Event"
+            android:textAlignment="center"
+            android:textSize="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.05">
+        </TextView>
+
+        <EditText
+            android:id="@+id/create_event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Event Name"
+            android:textSize="20dp"
+            android:singleLine="true"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.05">
+        </EditText>
+
+        <TextView
+            android:id="@+id/create_event_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click to select Date"
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_name"
+            android:layout_marginTop="20dp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/create_event_date_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click to select Time"
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_date"
+            android:layout_marginTop="5dp">
+        </TextView>
+
+        <EditText
+            android:id="@+id/create_event_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Event Description"
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_date_time"
+            android:layout_marginTop="20dp">
+        </EditText>
+
+        <EditText
+            android:id="@+id/create_event_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Event Location"
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_description"
+            android:layout_marginTop="20dp">
+        </EditText>
+
+        <TextView
+            android:id="@+id/create_event_img_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Image: "
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_location"
+            android:layout_marginTop="20dp">
+        </TextView>
+
+        <ImageView
+            android:id="@+id/create_event_img"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_img_txt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            android:src="@drawable/ic_launcher_background"
+            android:scaleType="fitXY"
+            android:layout_marginTop="5dp">
+        </ImageView>
+
+        <ProgressBar
+            android:id="@+id/create_event_img_pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_img_txt"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            android:visibility="invisible">
+        </ProgressBar>
+
+        <TextView
+            android:id="@+id/create_event_topic_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Topic: "
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_img"
+            android:layout_marginTop="20dp">
+        </TextView>
+
+        <RadioGroup
+            android:id="@+id/create_event_topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_topic_txt"
+            android:layout_marginTop="5dp">
+
+            <RadioButton
+                android:id="@+id/create_event_topic_music"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Music"
+                android:textSize="20dp"
+                android:layout_marginStart="20dp">
+            </RadioButton>
+
+            <RadioButton
+                android:id="@+id/create_event_topic_sports"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Sports"
+                android:textSize="20dp"
+                android:layout_marginStart="50dp">
+            </RadioButton>
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/create_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create!"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_topic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            android:layout_marginTop="20dp"
+            ></Button>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

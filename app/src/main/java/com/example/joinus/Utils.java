@@ -1,20 +1,12 @@
 package com.example.joinus;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.joinus.login.LoginActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.example.joinus.model.Event;
+import com.example.joinus.model.User;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -25,9 +17,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Utils {
@@ -35,7 +26,7 @@ public class Utils {
     public static final String TAG = "Utils";
     public static final String DEFAULTIMAGE = "DEFAULTIMAGE";
     public static final String USER_ERROR = "The user does not exists";
-    public static final String[] TOPICS = new String[]{"Music", "Science", "Sports", "Arts"};
+    public static final String[] TOPICS = new String[]{"Music", "Sports"};
 
     public final static User getUserData (String uid, Context context){
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -127,5 +118,10 @@ public class Utils {
             }
         });
         return currentUser;
+    }
+
+    public static final String formatDate (Date date){
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
+        return android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", date).toString();
     }
 }

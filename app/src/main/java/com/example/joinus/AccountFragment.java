@@ -13,16 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.joinus.login.LoginActivity;
+import com.example.joinus.model.User;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,8 +41,6 @@ public class AccountFragment extends Fragment {
     ImageView profileImg;
     ImageButton profileEdit;
     ChipGroup chipGroup;
-
-
 
     private FirebaseAuth mAuth;
     private String uid;
@@ -149,6 +146,7 @@ public class AccountFragment extends Fragment {
     }
 
     public void initView(){
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -166,15 +164,15 @@ public class AccountFragment extends Fragment {
                 //set the ImageView
                 if(currentUser.getProfileImg().equals(Utils.DEFAULTIMAGE)){
                     AssetManager assetManager = getContext().getAssets();
-                    InputStream istr = null;
+                    InputStream instr = null;
                     try {
-                        istr = assetManager.open("defaultProfile.png");
+                        instr = assetManager.open("defaultProfile.png");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Bitmap bitmap = BitmapFactory.decodeStream(istr);
+                    Bitmap bitmap = BitmapFactory.decodeStream(instr);
                     try {
-                        istr.close();
+                        instr.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

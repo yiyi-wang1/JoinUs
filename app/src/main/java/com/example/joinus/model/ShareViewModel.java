@@ -1,7 +1,9 @@
-package com.example.joinus;
+package com.example.joinus.model;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.example.joinus.model.User;
 
 public class ShareViewModel extends ViewModel {
     private MutableLiveData<User> currentUser = new MutableLiveData<>();

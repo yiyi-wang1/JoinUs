@@ -18,7 +18,8 @@
         <ImageView
             android:id="@+id/event_card_img"
             android:layout_width="match_parent"
-            android:layout_height="110dp"></ImageView>
+            android:layout_height="90dp"
+            android:scaleType="fitXY"></ImageView>
 
         <TextView
             android:id="@+id/event_card_date_tv"

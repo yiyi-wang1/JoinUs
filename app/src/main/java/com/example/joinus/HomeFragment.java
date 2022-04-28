@@ -1,5 +1,6 @@
 package com.example.joinus;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,21 +23,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.joinus.adapter.HomeRecyclerAdapter;
+import com.example.joinus.model.Event;
+import com.example.joinus.model.ShareViewModel;
+import com.example.joinus.model.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,8 +50,6 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     HomeRecyclerAdapter homeRecyclerAdapter;
-
-
 
     public HomeFragment() {
         // Required empty public constructor
@@ -93,9 +84,8 @@ public class HomeFragment extends Fragment {
         super.onStart();
         handler = new Handler(Looper.getMainLooper());
         currentUser = null;
-
+        pb.setVisibility(View.VISIBLE);
         new Thread(() -> {
-            pb.setVisibility(View.VISIBLE);
             currentUser = Utils.getUserData(uid,getContext());
 
             while(currentUser.getUid() == null){
@@ -103,26 +93,29 @@ public class HomeFragment extends Fragment {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Log.d(TAG, currentUser.toString());
                 }
             }
 
             if(currentUser.getUsername() != null && currentUser.getEventList() != null){
                 initView();
             }
+
         }).start();
 
         creat_event_btn.setOnClickListener(view -> {
             if(!currentUser.isVerified()){
-                Toast.makeText(getContext(), "You are not verified yet!", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), "You are not verified yet!", Toast.LENGTH_SHORT).show();
             }else{
                 //TODO: start the new event create page
+                Intent intent = new Intent(getActivity().getApplicationContext(), CreateEventActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     public void initView(){
         handler.post(() -> {
-
             //set the Textview
             username_tv.setText(currentUser.getUsername());
             pb.setVisibility(View.INVISIBLE);
@@ -148,9 +141,9 @@ public class HomeFragment extends Fragment {
             TextView next_event_name = getActivity().findViewById(R.id.next_event_name);
             ImageView next_event_img = getActivity().findViewById(R.id.next_event_img);
 
-            next_event_time.setText(nextEvent.getEventDate().toDate().toString());
+            next_event_time.setText(Utils.formatDate(nextEvent.getEventDate().toDate()));
             next_event_name.setText(nextEvent.getEventName());
-
+            Picasso.get().load(nextEvent.getEventImgURL()).into(next_event_img);
 
             //set the recycleview
             layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
@@ -177,5 +170,4 @@ public class HomeFragment extends Fragment {
           return next;
       }
     }
-
 }

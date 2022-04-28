@@ -40,10 +40,6 @@ public class MainActivity extends AppCompatActivity {
                         selected = new SearchFragment();
                         break;
 
-                    case R.id.chatFragment:
-                        selected = new ChatFragment();
-                        break;
-
                     case R.id.accountFragment:
                         selected = new AccountFragment();
                         break;

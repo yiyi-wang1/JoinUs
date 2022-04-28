@@ -1,9 +1,8 @@
-package com.example.joinus;
+package com.example.joinus.model;
 
+import com.firebase.geofire.core.GeoHash;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
-
-import java.util.Date;
 
 public class Event {
 
@@ -14,11 +13,14 @@ public class Event {
     private Timestamp eventDate;
     private String eventImgURL;
     private Integer eventAttendNum;
+    private String eventTopic;
+    private String eventDescription;
+    private String eventGeohash;
 
     public Event() {
     }
 
-    public Event(String eventId, String eventName, GeoPoint eventLocation, String eventCreator, Timestamp eventDate, String eventImgURL, Integer eventAttendNum) {
+    public Event(String eventId, String eventName, GeoPoint eventLocation, String eventCreator, Timestamp eventDate, String eventImgURL, Integer eventAttendNum, String eventTopic, String eventDescription, String eventGeohash) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventLocation = eventLocation;
@@ -26,6 +28,18 @@ public class Event {
         this.eventDate = eventDate;
         this.eventImgURL = eventImgURL;
         this.eventAttendNum = eventAttendNum;
+        this.eventTopic = eventTopic;
+        this.eventDescription = eventDescription;
+        this.eventGeohash = eventGeohash;
+
+    }
+
+    public Event(String eventId, String eventName, GeoPoint eventLocation, Timestamp eventDate, String eventImgURL) {
+        this.eventId = eventId;
+        this.eventName = eventName;
+        this.eventLocation = eventLocation;
+        this.eventDate = eventDate;
+        this.eventImgURL = eventImgURL;
     }
 
     public String getEventId() {
@@ -82,5 +96,29 @@ public class Event {
 
     public void setEventAttendNum(Integer eventAttendNum) {
         this.eventAttendNum = eventAttendNum;
+    }
+
+    public String getEventTopic() {
+        return eventTopic;
+    }
+
+    public void setEventTopic(String eventTopic) {
+        this.eventTopic = eventTopic;
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
+    }
+
+    public String getEventGeohash() {
+        return eventGeohash;
+    }
+
+    public void setEventGeohash(String eventGeohash) {
+        this.eventGeohash = eventGeohash;
     }
 }

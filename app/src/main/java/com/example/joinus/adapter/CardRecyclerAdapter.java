@@ -1,4 +1,4 @@
-package com.example.joinus.login;
+package com.example.joinus.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.joinus.Event;
 import com.example.joinus.R;
+import com.example.joinus.Utils;
+import com.example.joinus.model.Event;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class CardRecyclerAdapter extends RecyclerView.Adapter<CardRecyclerHolder
     public void onBindViewHolder(@NonNull CardRecyclerHolder holder, int position) {
         Event event = eventList.get(position);
         holder.name.setText(event.getEventName());
-        holder.date.setText(event.getEventDate().toDate().toString());
+        holder.date.setText(Utils.formatDate(event.getEventDate().toDate()));
         holder.num.setText(event.getEventAttendNum().toString());
         Picasso.get().load(event.getEventImgURL()).into(holder.img);
     }

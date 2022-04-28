@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import com.example.joinus.R;
+import com.example.joinus.Utils;
+import com.example.joinus.model.Event;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerHolder
     public void onBindViewHolder(@NonNull HomeRecyclerHolder holder, int position) {
         Event event = eventList.get(position);
         holder.name.setText(event.getEventName());
-        holder.date.setText(event.getEventDate().toDate().toString());
+        holder.date.setText(Utils.formatDate(event.getEventDate().toDate()));
     }
 
     @Override

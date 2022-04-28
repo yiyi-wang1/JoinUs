@@ -1,7 +1,7 @@
-package com.example.joinus;
+package com.example.joinus.model;
 
-import android.media.Image;
-
+import com.example.joinus.Utils;
+import com.example.joinus.model.Event;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;

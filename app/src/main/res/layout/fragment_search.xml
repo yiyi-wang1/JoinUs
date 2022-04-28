@@ -10,19 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-<!--        <ImageButton-->
-<!--            android:id="@+id/search_map_btn"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="#FFFFFF"-->
-<!--            android:src="@drawable/ic_baseline_map_24"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.05"-->
-<!--            android:contentDescription="Map to see nearby event"></ImageButton>-->
-
         <EditText
             android:id="@+id/search_bar"
             android:layout_width="260dp"
@@ -36,6 +23,7 @@
             android:layout_marginTop="10dp"></EditText>
 
         <Button
+            android:id="@+id/search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
@@ -43,11 +31,45 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/search_bar"
             app:layout_constraintStart_toEndOf="@id/search_bar"></Button>
 
+        <TextView
+            android:id="@+id/search_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Your Location:  N/A          "
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_bar"></TextView>
+
+        <Button
+            android:id="@+id/search_location_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="GET LOCATION"
+            app:layout_constraintBaseline_toBaselineOf="@+id/search_location"
+            app:layout_constraintStart_toEndOf="@id/search_location"></Button>
+
+
+        <ProgressBar
+            android:id="@+id/search_location_pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_bar"
+            android:visibility="invisible"></ProgressBar>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/search_hot_event_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/search_bar"
+            app:layout_constraintTop_toBottomOf="@+id/search_location_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp">
@@ -59,7 +81,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hot Events Near You"
+                    android:text="Hot Events Now"
                     android:textSize="30dp"
                     android:textAlignment="center">
                 </TextView>
@@ -81,7 +103,8 @@
             android:textSize="30dp"
             app:layout_constraintTop_toBottomOf="@+id/search_hot_event_card"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp">
         </TextView>
 
         <include android:id="@+id/search_top1"
@@ -104,14 +127,5 @@
             layout="@layout/topic_recommended">
         </include>
 
-        <include android:id="@+id/search_top3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_top2"
-            android:layout_marginTop="10dp"
-            layout="@layout/topic_recommended">
-        </include>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

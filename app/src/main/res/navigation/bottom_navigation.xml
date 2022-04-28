@@ -15,11 +15,6 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
-        android:id="@+id/chatFragment"
-        android:name="com.example.joinus.ChatFragment"
-        android:label="fragment_chat"
-        tools:layout="@layout/fragment_chat" />
-    <fragment
         android:id="@+id/accountFragment"
         android:name="com.example.joinus.AccountFragment"
         android:label="fragment_account"
