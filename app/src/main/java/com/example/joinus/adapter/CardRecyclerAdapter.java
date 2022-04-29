@@ -3,6 +3,7 @@ package com.example.joinus.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,9 +19,11 @@ import java.util.List;
 
 public class CardRecyclerAdapter extends RecyclerView.Adapter<CardRecyclerHolder> {
     private List<Event> eventList;
+    private OnItemClickListener listener;
 
-    public CardRecyclerAdapter(List<Event> eventList) {
+    public CardRecyclerAdapter(List<Event> eventList, OnItemClickListener listener) {
         this.eventList = eventList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,11 +36,7 @@ public class CardRecyclerAdapter extends RecyclerView.Adapter<CardRecyclerHolder
 
     @Override
     public void onBindViewHolder(@NonNull CardRecyclerHolder holder, int position) {
-        Event event = eventList.get(position);
-        holder.name.setText(event.getEventName());
-        holder.date.setText(Utils.formatDate(event.getEventDate().toDate()));
-        holder.num.setText(event.getEventAttendNum().toString());
-        Picasso.get().load(event.getEventImgURL()).into(holder.img);
+        holder.bind(eventList.get(position), listener);
     }
 
     @Override
@@ -64,4 +63,18 @@ class CardRecyclerHolder extends RecyclerView.ViewHolder {
         img = itemView.findViewById(R.id.event_card_img);
         txt = itemView.findViewById(R.id.event_card_txt);
     }
+
+    public void bind(final Event event, final OnItemClickListener listener) {
+        name.setText(event.getEventName());
+        date.setText(Utils.formatDate(event.getEventDate().toDate()));
+        num.setText(event.getEventAttendNum().toString());
+        Picasso.get().load(event.getEventImgURL()).into(img);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(event);
+            }
+        });
+    }
+
 }

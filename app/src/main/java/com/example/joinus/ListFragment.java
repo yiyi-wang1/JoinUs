@@ -1,11 +1,14 @@
 package com.example.joinus;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.joinus.adapter.CardRecyclerAdapter;
+import com.example.joinus.adapter.HomeRecyclerAdapter;
+import com.example.joinus.adapter.ListRecyclerAdapter;
+import com.example.joinus.adapter.OnItemClickListener;
 import com.example.joinus.model.Event;
 import com.example.joinus.model.ShareViewModelResult;
 import com.firebase.geofire.GeoFireUtils;
@@ -43,7 +50,9 @@ public class ListFragment extends Fragment {
     private List<Event> eventListByKeyword;
     private List<Event> eventListByLocation;
 
-
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
+    ListRecyclerAdapter listRecyclerAdapter;
     public ListFragment() {
         // Required empty public constructor
     }
@@ -59,7 +68,7 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-
+        recyclerView = view.findViewById(R.id.search_list_result);
         model = new ViewModelProvider(requireActivity()).get(ShareViewModelResult.class);
         return view;
     }
@@ -108,7 +117,6 @@ public class ListFragment extends Fragment {
                         }
                     }
                 }
-                model.setList(result);
                 setView(result);
             }
         }).start();
@@ -186,7 +194,19 @@ public class ListFragment extends Fragment {
         handler.post(new Runnable() {
             @Override
             public void run() {
-
+                //TODO: list recyclerview for result
+                model.setList(result);
+                layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+                listRecyclerAdapter = new ListRecyclerAdapter(result, new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Event item) {
+                        Intent intent = new Intent(getActivity().getApplicationContext(), EventDetailActivity.class);
+                        intent.putExtra("eventId", item.getEventId());
+                        startActivity(intent);
+                    }
+                }, getContext());
+                recyclerView.setAdapter(listRecyclerAdapter);
+                recyclerView.setLayoutManager(layoutManager);
             }
         });
     }

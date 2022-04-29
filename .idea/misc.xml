@@ -12,13 +12,14 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.29322916666666665" />
         <entry key="app/src/main/res/layout/activity_create_event.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_edit_profile.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/activity_event_detail.xml" value="0.17028985507246377" />
+        <entry key="app/src/main/res/layout/activity_event_detail.xml" value="0.375" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.19972826086956522" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_search_result.xml" value="0.335" />
         <entry key="app/src/main/res/layout/chat_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/custom_info_window.xml" value="0.335" />
         <entry key="app/src/main/res/layout/event_card_item.xml" value="0.375" />
         <entry key="app/src/main/res/layout/event_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/filter_interested_topics.xml" value="0.1693840579710145" />
@@ -28,6 +29,8 @@
         <entry key="app/src/main/res/layout/fragment_list.xml" value="0.17028985507246377" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.17028985507246377" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/infowindow.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/search_result_event_card_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/topic_recommended.xml" value="0.1838768115942029" />
         <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.2361111111111111" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.29322916666666665" />

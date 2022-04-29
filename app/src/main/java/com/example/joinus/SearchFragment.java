@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.joinus.adapter.CardRecyclerAdapter;
+import com.example.joinus.adapter.OnItemClickListener;
 import com.example.joinus.model.Event;
 import com.example.joinus.model.ShareViewModel;
 import com.example.joinus.model.User;
@@ -117,6 +118,8 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        model = new ViewModelProvider(requireActivity()).get(ShareViewModel.class);
+        currentUser = model.getCurrentUser().getValue();
     }
 
     @Override
@@ -129,8 +132,6 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        model = new ViewModelProvider(requireActivity()).get(ShareViewModel.class);
-        currentUser = model.getCurrentUser().getValue();
         search_bar = view.findViewById(R.id.search_bar);
         search_btn = view.findViewById(R.id.search_btn);
         search_location_tv = view.findViewById(R.id.search_location);
@@ -151,6 +152,9 @@ public class SearchFragment extends Fragment {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                if(currentUser == null){
+                    return;
+                }
                 if(currentUser.getLocation() == null){
                     search_location_tv.setText(NO_LOCATION);
                 }else{
@@ -175,7 +179,14 @@ public class SearchFragment extends Fragment {
 
     public void setRecyclerView(RecyclerView.LayoutManager layoutManager, RecyclerView recyclerView, RecyclerView.Adapter adapter, List<Event> list){
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), RecyclerView.HORIZONTAL, false);
-        adapter = new CardRecyclerAdapter(list);
+        adapter = new CardRecyclerAdapter(list, new OnItemClickListener() {
+            @Override
+            public void onItemClick(Event item) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), EventDetailActivity.class);
+                intent.putExtra("eventId", item.getEventId());
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
     }

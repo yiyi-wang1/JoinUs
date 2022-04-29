@@ -42,6 +42,13 @@ public class Event {
         this.eventImgURL = eventImgURL;
     }
 
+    public Event(String eventId, String eventName, Timestamp eventDate, String eventImgURL) {
+        this.eventId = eventId;
+        this.eventName = eventName;
+        this.eventDate = eventDate;
+        this.eventImgURL = eventImgURL;
+    }
+
     public String getEventId() {
         return eventId;
     }

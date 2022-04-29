@@ -142,7 +142,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         public void onSuccess(Void unused) {
                             Toast.makeText(getApplicationContext(),"Create Event Successfully!", Toast.LENGTH_SHORT).show();
                             Event newEvent1 = new Event(eventId, eventName, eventLocation, new Timestamp(calendar1.getTime()), imgURi.toString());
-                            database.collection("users").document(currentUserId).collection("events").document(eventId).set(newEvent).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            database.collection("users").document(currentUserId).collection("events").document(eventId).set(newEvent1).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
                                     Toast.makeText(getApplicationContext(),"Add Event Successfully!", Toast.LENGTH_SHORT).show();
