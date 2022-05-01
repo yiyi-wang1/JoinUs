@@ -73,13 +73,17 @@ Never miss out the events!
 # API used
 
 Google Map
+
 Firebase Cloud Messaging
+
 Google Geocoding
 
-# Datebase/Develop Tools
+# Database/Developing Tools
 
 Firebase Firestore
+
 Firebase FireStorage
+
 Firebase Authentication
 
 
