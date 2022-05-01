@@ -127,7 +127,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
                         event_name.setText("Event Name: " + eventName);
                         event_date.setText("Event Date: " + Utils.formatDate(eventDate.toDate()));
-                        event_description.setText("Event Name: " + event.getEventDescription());
+                        event_description.setText("Event Description: " + event.getEventDescription());
                         Picasso.get().load(eventImg).into(event_img);
 
                         //get Location from geopoint
