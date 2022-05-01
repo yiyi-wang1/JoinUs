@@ -152,6 +152,7 @@ public class SearchFragment extends Fragment {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                progressBar.setVisibility(View.INVISIBLE);
                 if(currentUser == null){
                     return;
                 }
@@ -196,7 +197,7 @@ public class SearchFragment extends Fragment {
         super.onStart();
         handler = new Handler(Looper.getMainLooper());
         database = FirebaseFirestore.getInstance();
-
+        progressBar.setVisibility(View.VISIBLE);
         new Thread(() -> {
             getHotEvent();
             getTopicEvents(Utils.TOPICS[0]);
