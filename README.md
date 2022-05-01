@@ -66,6 +66,7 @@ If you are verified, you could also create your own event!
 **7. Get notification when new event create under your subscribed topics**
 
 Never miss out the events!
+
 <img src="https://user-images.githubusercontent.com/90237052/166129581-0849e0c3-a1e5-432e-b11f-23c4e7d660e2.png" height="350">
 
 
