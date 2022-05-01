@@ -70,6 +70,11 @@ Never miss out the events!
 <img src="https://user-images.githubusercontent.com/90237052/166129581-0849e0c3-a1e5-432e-b11f-23c4e7d660e2.png" height="350">
 
 
+# Video Link for this project 
+
+https://www.youtube.com/watch?v=HU0Ox9darAE
+
+
 # API used
 
 Google Map
@@ -87,3 +92,12 @@ Firebase FireStorage
 Firebase Authentication
 
 
+# Test Accounts 
+
+email: eewang1145@gmail.com
+
+password: 123456
+
+email: test1@gmail.com
+
+password: 123456
