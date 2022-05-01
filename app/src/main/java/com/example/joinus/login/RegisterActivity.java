@@ -36,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String password;
     private String confirmedPassword;
     private String username;
+    private String fcmToken;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore database;
@@ -55,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseFirestore.getInstance();
+        fcmToken = getIntent().getExtras().getString("fcmToken");
 
         register_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
 //        user.put("location",null);
 //        user.put("interestedTopics",null);
 //        user.put("verified",false);
-        User user = new User(email,uid,username);
+        User user = new User(email,uid,username,fcmToken);
         
         database.collection("users").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

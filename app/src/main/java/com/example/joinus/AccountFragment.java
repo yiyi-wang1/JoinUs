@@ -126,18 +126,21 @@ public class AccountFragment extends Fragment {
                     }
                 }
 
-                if(currentUser.getUsername() != null && currentUser.getLocation() != null){
+                if(currentUser.getUsername() != null){
 
-                    //get the city name from current location
-                    double lat = currentUser.getLocation().getLatitude();
-                    double lon = currentUser.getLocation().getLongitude();
-
-                    try {
-                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                        List<Address> addresses = geocoder.getFromLocation(lat, lon,1);
-                        city = addresses.get(0).getLocality();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if(currentUser.getLocation() == null){
+                        city = "N/A";
+                    }else{
+                        //get the city name from current location
+                        double lat = currentUser.getLocation().getLatitude();
+                        double lon = currentUser.getLocation().getLongitude();
+                        try {
+                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                            List<Address> addresses = geocoder.getFromLocation(lat, lon,1);
+                            city = addresses.get(0).getLocality();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     initView();
                 }

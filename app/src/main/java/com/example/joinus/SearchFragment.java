@@ -221,12 +221,18 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 keyword = search_bar.getText().toString().trim();
                 Log.d(TAG,keyword);
+                if(currentUser.getLocation() == null){
+                    Toast.makeText(getActivity().getApplicationContext(),"Please get location", Toast.LENGTH_SHORT).show();
+                }
+
                 if(keyword != null && !TextUtils.isEmpty(keyword)){
                     Intent intent = new Intent(getActivity().getApplicationContext(), SearchResultActivity.class);
                     intent.putExtra("keyword", keyword);
                     intent.putExtra("lat",currentUser.getLocation().getLatitude());
                     intent.putExtra("lon", currentUser.getLocation().getLongitude());
                     startActivity(intent);
+                }else{
+                    Toast.makeText(getActivity().getApplicationContext(),"Please enter search keyword", Toast.LENGTH_SHORT).show();
                 }
             }
         });

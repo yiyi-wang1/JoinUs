@@ -21,16 +21,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,6 +45,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private GeoPoint eventLocation;
     private Timestamp eventDate;
     private Integer eventAttendNum;
+    private boolean subcollection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class EventDetailActivity extends AppCompatActivity {
         String eventId = getIntent().getExtras().getString("eventId");
         mAuth = FirebaseAuth.getInstance();
         String currentUserId = mAuth.getCurrentUser().getUid();
+        subcollection = false;
 
         TextView event_attended = findViewById(R.id.event_detail_attended);
         TextView event_name = findViewById(R.id.event_detail_name);
@@ -67,25 +72,45 @@ public class EventDetailActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
 
         pb.setVisibility(View.VISIBLE);
-        DocumentReference doc = database.collection("users").document(currentUserId).collection("events").document(eventId);
-        doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        //check if the user have subcollection "events"
+        CollectionReference col = database.collection("users").document(currentUserId).collection("events");
+        col.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        event_attended.setVisibility(View.VISIBLE);
-                        event_add_btn.setVisibility(View.INVISIBLE);
-                    } else {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().size() < 0){
                         event_attended.setVisibility(View.INVISIBLE);
                         event_add_btn.setVisibility(View.VISIBLE);
+                    }else{
+
+                        DocumentReference doc = col.document(eventId);
+                        doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        event_attended.setVisibility(View.VISIBLE);
+                                        event_add_btn.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        event_attended.setVisibility(View.INVISIBLE);
+                                        event_add_btn.setVisibility(View.VISIBLE);
+                                    }
+                                } else {
+                                    Log.d(TAG, "Failed with: ", task.getException());
+                                }
+                            }
+                        });
+
                     }
-                } else {
+                }else {
                     Log.d(TAG, "Failed with: ", task.getException());
                 }
             }
         });
 
+        Log.d(TAG+"notification", String.valueOf(subcollection));
         DocumentReference docEvent = database.collection("events").document(eventId);
         docEvent.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

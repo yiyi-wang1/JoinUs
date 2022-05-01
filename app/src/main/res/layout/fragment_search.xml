@@ -26,10 +26,11 @@
             android:id="@+id/search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="35dp"
             android:text="search"
             app:layout_constraintBaseline_toBaselineOf="@+id/search_bar"
-            app:layout_constraintStart_toEndOf="@id/search_bar"></Button>
+            app:layout_constraintStart_toEndOf="@id/search_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.3"></Button>
 
         <TextView
             android:id="@+id/search_location"
@@ -48,10 +49,11 @@
             android:id="@+id/search_location_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:text="GET LOCATION"
             app:layout_constraintBaseline_toBaselineOf="@+id/search_location"
-            app:layout_constraintStart_toEndOf="@id/search_location"></Button>
+            app:layout_constraintStart_toEndOf="@id/search_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.3"></Button>
 
 
         <ProgressBar

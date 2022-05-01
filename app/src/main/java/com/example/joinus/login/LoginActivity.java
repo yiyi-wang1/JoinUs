@@ -16,11 +16,13 @@ import android.widget.Toast;
 
 import com.example.joinus.MainActivity;
 import com.example.joinus.R;
+import com.example.joinus.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String user_email;
     private String user_password;
+    private String fcmToken;
     private FirebaseAuth mAuth;
 
     @Override
@@ -50,6 +53,23 @@ public class LoginActivity extends AppCompatActivity {
         login_btn = findViewById(R.id.login_button);
         register_text = findViewById(R.id.login_register_txt);
         progressBar = findViewById(R.id.login_pb);
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        fcmToken = task.getResult();
+
+                        // Log and toast
+                        Log.d(TAG + "token", fcmToken);
+                    }
+                });
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                                             Log.d(TAG, "signInWithEmail:success");
                                             FirebaseUser user = mAuth.getCurrentUser();
                                             Toast.makeText(getApplicationContext(),LOGIN_SUCCESS, Toast.LENGTH_SHORT).show();
+                                            Utils.updateToken(fcmToken);
                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                             startActivity(intent);
                                             finish();
@@ -89,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                intent.putExtra("fcmToken",fcmToken);
                 startActivity(intent);
             }
         });

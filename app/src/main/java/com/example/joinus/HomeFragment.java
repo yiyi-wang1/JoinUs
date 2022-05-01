@@ -107,7 +107,6 @@ public class HomeFragment extends Fragment {
             if(!currentUser.isVerified()){
                 Toast.makeText(getContext(), "You are not verified yet!", Toast.LENGTH_SHORT).show();
             }else{
-                //TODO: start the new event create page
                 Intent intent = new Intent(getActivity().getApplicationContext(), CreateEventActivity.class);
                 startActivity(intent);
             }
@@ -131,25 +130,25 @@ public class HomeFragment extends Fragment {
                 next_event_id = R.id.next_event_l1;
             } else {
                 next_event_id = R.id.next_event_l2;
+                Event nextEvent = find_next_event(currentUser.getEventList());
+                TextView next_event_time = getActivity().findViewById(R.id.next_event_time);
+                TextView next_event_name = getActivity().findViewById(R.id.next_event_name);
+                ImageView next_event_img = getActivity().findViewById(R.id.next_event_img);
+                next_event_time.setText(Utils.formatDate(nextEvent.getEventDate().toDate()));
+                next_event_name.setText(nextEvent.getEventName());
+                Picasso.get().load(nextEvent.getEventImgURL()).into(next_event_img);
             }
             next_event_layout = getActivity().findViewById(next_event_id);
             next_event_layout.setVisibility(View.VISIBLE);
-
-            Event nextEvent = find_next_event(currentUser.getEventList());
-
-            TextView next_event_time = getActivity().findViewById(R.id.next_event_time);
-            TextView next_event_name = getActivity().findViewById(R.id.next_event_name);
-            ImageView next_event_img = getActivity().findViewById(R.id.next_event_img);
-
-            next_event_time.setText(Utils.formatDate(nextEvent.getEventDate().toDate()));
-            next_event_name.setText(nextEvent.getEventName());
-            Picasso.get().load(nextEvent.getEventImgURL()).into(next_event_img);
 
             //set the recycleview
             layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
             homeRecyclerAdapter = new HomeRecyclerAdapter(currentUser.getEventList());
             recyclerView.setAdapter(homeRecyclerAdapter);
             recyclerView.setLayoutManager(layoutManager);
+
+            //subscribe to topics
+            Utils.resetSubscription(currentUser.getInterestedTopics(),getActivity().getApplicationContext());
         });
     }
 

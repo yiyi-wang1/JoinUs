@@ -11,26 +11,26 @@ public class User {
     private String email;
     private String uid;
     private String username;
-    private String profileImgUrl;
+    private String profileImg;
     private List<Event> eventList;
-    private List<String> chatList;
     private GeoPoint location;
     private List<String> interestedTopics;
     private boolean verified;
+    private String fcmToken;
 
     public User() {
     }
 
-    public User(String email, String uid, String username) {
+    public User(String email, String uid, String username, String fcmToken) {
         this.email = email;
         this.uid = uid;
         this.username = username;
-        profileImgUrl  = Utils.DEFAULTIMAGE;
-        eventList = new ArrayList<>();
-        chatList = new ArrayList<>();
+        profileImg  = Utils.DEFAULTIMAGE;
+        eventList = null;
         location = null;
         interestedTopics = new ArrayList<>();
         verified = false;
+        this.fcmToken = fcmToken;
     }
 
     public String getEmail() {
@@ -58,11 +58,11 @@ public class User {
     }
 
     public String getProfileImg() {
-        return profileImgUrl;
+        return profileImg;
     }
 
-    public void setProfileImg(String profileImgUrl) {
-        this.profileImgUrl = profileImgUrl;
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 
     public List<Event> getEventList() {
@@ -71,14 +71,6 @@ public class User {
 
     public void setEventList(List<Event> eventList) {
         this.eventList = eventList;
-    }
-
-    public List<String> getChatList() {
-        return chatList;
-    }
-
-    public void setChatList(List<String> chatList) {
-        this.chatList = chatList;
     }
 
     public GeoPoint getLocation() {
@@ -103,5 +95,13 @@ public class User {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

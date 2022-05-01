@@ -39,6 +39,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
@@ -47,6 +50,7 @@ import java.util.UUID;
 public class CreateEventActivity extends AppCompatActivity {
 
     public static final String TAG = "CreateEvent";
+    private static String SERVER_KEY;
 
     EditText eventName_tv, eventDescription_tv, eventLocation_tv;
     TextView eventDate_tv, eventTime_tv;
@@ -142,6 +146,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         public void onSuccess(Void unused) {
                             Toast.makeText(getApplicationContext(),"Create Event Successfully!", Toast.LENGTH_SHORT).show();
                             Event newEvent1 = new Event(eventId, eventName, eventLocation, new Timestamp(calendar1.getTime()), imgURi.toString());
+                            sendEventNotification(eventTopic,eventId,eventName);
                             database.collection("users").document(currentUserId).collection("events").document(eventId).set(newEvent1).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
@@ -302,6 +307,41 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void sendEventNotification(String eventTopic,String eventId,String eventName){
+
+        // Prepare data
+        JSONObject jPayload = new JSONObject();
+        JSONObject jdata = new JSONObject();
+        try {
+            String title = "New event for " + eventTopic + " just created!";
+            String content = "Event Name: " + eventName;
+
+
+            jdata.put("title", title);
+            jdata.put("body", content);
+            jdata.put("eventId",eventId);
+
+            // Populate the Payload object.
+            // Note that "to" is a topic, not a token representing an app instance
+            jPayload.put("to", "/topics/"+ eventTopic);
+            jPayload.put("priority", "high");
+            jPayload.put("data", jdata);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SERVER_KEY = "key=" + Utils.getProperties(getApplicationContext()).getProperty("SERVER_KEY");
+                final String resp = Utils.fcmHttpConnection(SERVER_KEY, jPayload);
+                Utils.postToastMessage("Status from Server: " + resp, getApplicationContext());
+            }
+        }).start();
+
     }
 
 

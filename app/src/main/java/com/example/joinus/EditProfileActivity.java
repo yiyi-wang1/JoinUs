@@ -19,8 +19,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.joinus.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +31,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -197,6 +200,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     if(updateInterested != null){
                         List<String> aList = new ArrayList<String>(updateInterested);
                         transaction.update(userRef, "interestedTopics",aList);
+
+                        //subscribe to topics
+                        Utils.resetSubscription(aList,getApplicationContext());
                     }
                     return null;
                 }
