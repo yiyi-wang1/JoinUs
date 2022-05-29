@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.search;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.joinus.R;
+import com.example.joinus.Util.Utils;
 import com.example.joinus.model.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,8 +34,6 @@ import com.google.firebase.firestore.Transaction;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,7 +45,6 @@ public class EventDetailActivity extends AppCompatActivity {
     private GeoPoint eventLocation;
     private Timestamp eventDate;
     private Integer eventAttendNum;
-    private boolean subcollection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,6 @@ public class EventDetailActivity extends AppCompatActivity {
         String eventId = getIntent().getExtras().getString("eventId");
         mAuth = FirebaseAuth.getInstance();
         String currentUserId = mAuth.getCurrentUser().getUid();
-        subcollection = false;
 
         TextView event_attended = findViewById(R.id.event_detail_attended);
         TextView event_name = findViewById(R.id.event_detail_name);
@@ -83,7 +81,6 @@ public class EventDetailActivity extends AppCompatActivity {
                         event_attended.setVisibility(View.INVISIBLE);
                         event_add_btn.setVisibility(View.VISIBLE);
                     }else{
-
                         DocumentReference doc = col.document(eventId);
                         doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -110,7 +107,7 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
-        Log.d(TAG+"notification", String.valueOf(subcollection));
+//        Log.d(TAG+"notification", String.valueOf(subcollection));
         DocumentReference docEvent = database.collection("events").document(eventId);
         docEvent.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

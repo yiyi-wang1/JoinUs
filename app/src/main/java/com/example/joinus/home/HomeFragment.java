@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.home;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,9 +23,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.joinus.adapter.HomeRecyclerAdapter;
+import com.example.joinus.R;
+import com.example.joinus.Util.Utils;
+import com.example.joinus.View.adapter.HomeRecyclerAdapter;
 import com.example.joinus.model.Event;
-import com.example.joinus.model.ShareViewModel;
+import com.example.joinus.ShareViewModel.ShareViewModel;
 import com.example.joinus.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -35,7 +37,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    public final static String TAG = "home";
+    public final static String TAG = "HOME";
 
     private FirebaseAuth mAuth;
     private String uid;
@@ -85,8 +87,9 @@ public class HomeFragment extends Fragment {
         handler = new Handler(Looper.getMainLooper());
         currentUser = null;
         pb.setVisibility(View.VISIBLE);
+
         new Thread(() -> {
-            currentUser = Utils.getUserData(uid,getContext());
+            currentUser = Utils.getUserData(uid);
 
             while(currentUser.getUid() == null){
                 try {
@@ -125,18 +128,23 @@ public class HomeFragment extends Fragment {
             //set the view for next event
             int next_event_id;
 
-            //Log.e(TAG, "username test: " + currentUser.getUsername());
+            //if cannot get the event list or it is empty, show no next event
             if (currentUser.getEventList() == null || currentUser.getEventList().isEmpty()) {
                 next_event_id = R.id.next_event_l1;
             } else {
                 next_event_id = R.id.next_event_l2;
                 Event nextEvent = find_next_event(currentUser.getEventList());
-                TextView next_event_time = getActivity().findViewById(R.id.next_event_time);
-                TextView next_event_name = getActivity().findViewById(R.id.next_event_name);
-                ImageView next_event_img = getActivity().findViewById(R.id.next_event_img);
-                next_event_time.setText(Utils.formatDate(nextEvent.getEventDate().toDate()));
-                next_event_name.setText(nextEvent.getEventName());
-                Picasso.get().load(nextEvent.getEventImgURL()).into(next_event_img);
+                //if all event are past, show no next event
+                if(nextEvent == null){
+                    next_event_id = R.id.next_event_l1;
+                }else {
+                    TextView next_event_time = getActivity().findViewById(R.id.next_event_time);
+                    TextView next_event_name = getActivity().findViewById(R.id.next_event_name);
+                    ImageView next_event_img = getActivity().findViewById(R.id.next_event_img);
+                    next_event_time.setText(Utils.formatDate(nextEvent.getEventDate().toDate()));
+                    next_event_name.setText(nextEvent.getEventName());
+                    Picasso.get().load(nextEvent.getEventImgURL()).into(next_event_img);
+                }
             }
             next_event_layout = getActivity().findViewById(next_event_id);
             next_event_layout.setVisibility(View.VISIBLE);
@@ -147,11 +155,14 @@ public class HomeFragment extends Fragment {
             recyclerView.setAdapter(homeRecyclerAdapter);
             recyclerView.setLayoutManager(layoutManager);
 
-            //subscribe to topics
-            Utils.resetSubscription(currentUser.getInterestedTopics(),getActivity().getApplicationContext());
         });
     }
 
+    /**
+     * To find the next event
+     * @param eventList
+     * @return the next event
+     */
     private Event find_next_event(List<Event> eventList){
       if (eventList.size() == 1){
           return eventList.get(0);

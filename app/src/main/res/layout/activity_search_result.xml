@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchResultActivity">
+    tools:context=".search.SearchResultActivity">
 
     <ImageButton
         android:id="@+id/search_map_btn"
@@ -31,12 +31,32 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"></TextView>
 
+    <TextView
+        android:id="@+id/search_result_txt_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Map to see nearby event"
+        android:text="within XXX"
+        android:textSize="20dp"
+        app:layout_constraintStart_toEndOf="@id/search_map_btn"
+        app:layout_constraintTop_toBottomOf="@id/search_result_txt"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"></TextView>
+
+    <SeekBar
+        android:id="@+id/search_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/search_result_txt_distance"
+        android:layout_marginTop="10dp">
+    </SeekBar>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/search_result_fragement"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/search_result_txt"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/search_seekbar"
         app:layout_constraintBottom_toBottomOf="parent"></androidx.fragment.app.FragmentContainerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

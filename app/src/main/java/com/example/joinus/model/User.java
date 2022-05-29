@@ -1,7 +1,6 @@
 package com.example.joinus.model;
 
-import com.example.joinus.Utils;
-import com.example.joinus.model.Event;
+import com.example.joinus.Util.Utils;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;

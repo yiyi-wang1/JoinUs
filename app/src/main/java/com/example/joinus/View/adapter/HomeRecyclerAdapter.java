@@ -1,4 +1,4 @@
-package com.example.joinus.adapter;
+package com.example.joinus.View.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.joinus.R;
-import com.example.joinus.Utils;
+import com.example.joinus.Util.Utils;
 import com.example.joinus.model.Event;
 
 import java.util.List;

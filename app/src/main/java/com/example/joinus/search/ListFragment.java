@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.search;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,12 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.joinus.adapter.CardRecyclerAdapter;
-import com.example.joinus.adapter.HomeRecyclerAdapter;
-import com.example.joinus.adapter.ListRecyclerAdapter;
-import com.example.joinus.adapter.OnItemClickListener;
+import com.example.joinus.R;
+import com.example.joinus.View.adapter.ListRecyclerAdapter;
+import com.example.joinus.View.adapter.OnItemClickListener;
 import com.example.joinus.model.Event;
-import com.example.joinus.model.ShareViewModelResult;
+import com.example.joinus.ShareViewModel.ShareViewModelResult;
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryBounds;
@@ -38,6 +37,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class ListFragment extends Fragment {
 
     private ShareViewModelResult model;
     private Handler handler;
+    private int distance;
     private List<Event> eventListByKeyword;
     private List<Event> eventListByLocation;
 
@@ -80,10 +82,15 @@ public class ListFragment extends Fragment {
         String keyword = getActivity().getIntent().getExtras().getString("keyword");
         Double lat = getActivity().getIntent().getExtras().getDouble("lat");
         Double lon = getActivity().getIntent().getExtras().getDouble("lon");
+
+        if(getArguments() != null){
+            distance = getArguments().getInt("distance");
+            Log.d(TAG, String.valueOf(distance));
+        }
         handler = new Handler(Looper.getMainLooper());
 
         new Thread(() -> {
-            Log.d(TAG+"keyword",keyword);
+//            Log.d(TAG+"keyword",keyword);
 
             getSearchResult(keyword);
 
@@ -117,6 +124,7 @@ public class ListFragment extends Fragment {
                         }
                     }
                 }
+                Collections.sort(result, Comparator.comparing(e -> e.getEventDate().toDate()));
                 setView(result);
             }
         }).start();
@@ -154,7 +162,7 @@ public class ListFragment extends Fragment {
         List<Event> eventList2 = new ArrayList<>();
         //this is the query to get nearby event list
         final GeoLocation center = new GeoLocation(lat, lon);
-        final double radiusInM = 5 * 1000;
+        final double radiusInM = distance * 1000;
         List<GeoQueryBounds> bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM);
         final List<Task<QuerySnapshot>> tasks = new ArrayList<>();
         for (GeoQueryBounds b : bounds) {
@@ -194,7 +202,6 @@ public class ListFragment extends Fragment {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                //TODO: list recyclerview for result
                 model.setList(result);
                 layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
                 listRecyclerAdapter = new ListRecyclerAdapter(result, new OnItemClickListener() {

@@ -1,15 +1,18 @@
-package com.example.joinus;
+package com.example.joinus.home;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.location.Address;
-import android.location.Geocoder;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,11 +29,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.joinus.R;
+import com.example.joinus.Util.Utils;
 import com.example.joinus.model.Event;
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,7 +52,7 @@ import com.google.firebase.storage.UploadTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -51,6 +61,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public static final String TAG = "CreateEvent";
     private static String SERVER_KEY;
+    private static String API_KEY;
+
 
     EditText eventName_tv, eventDescription_tv, eventLocation_tv;
     TextView eventDate_tv, eventTime_tv;
@@ -70,6 +82,22 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+        // Initialize the SDK
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            API_KEY = bundle.getString("com.google.android.geo.API_KEY");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+        }
+
+        Places.initialize(getApplicationContext(), API_KEY);
+
+        // Create a new PlacesClient instance
+        PlacesClient placesClient = Places.createClient(this);
 
         eventName_tv = findViewById(R.id.create_event_name);
         eventDescription_tv = findViewById(R.id.create_event_description);
@@ -100,6 +128,22 @@ public class CreateEventActivity extends AppCompatActivity {
                 showTimePickerDialog();
                 Log.d(TAG, new Timestamp(calendar1.getTime()).toString());
 
+            }
+        });
+
+        eventLocation_tv.setFocusable(false);
+        eventLocation_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Set the fields to specify which types of place data to
+                // return after the user has made a selection.
+                List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG);
+
+                // Start the autocomplete intent.
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                        .build(CreateEventActivity.this);
+                autocomplteLauncher.launch(intent);
             }
         });
 
@@ -160,6 +204,23 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    ActivityResultLauncher<Intent> autocomplteLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Place place = Autocomplete.getPlaceFromIntent(data);
+                        //set the location
+                        eventLocation_tv.setText(place.getAddress());
+                        eventLocation = new GeoPoint(place.getLatLng().latitude,place.getLatLng().longitude);
+//                        Log.d(TAG+"Location:", eventLocation.toString());
+                    }
+                }
+            });
+
+
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
@@ -170,27 +231,6 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
             });
 
-    public GeoPoint getLocationFromAddress(String strAddress) {
-        Geocoder coder = new Geocoder(this);
-        List<Address> address;
-        GeoPoint p1 = null;
-
-        try {
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-            Address location = address.get(0);
-            p1 = new GeoPoint(location.getLatitude(),location.getLongitude());
-
-            Log.d(TAG,p1.toString());
-
-            return p1;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private void uploadImg(){
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -267,17 +307,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private boolean checkInfo(){
         String eventAddress = eventLocation_tv.getText().toString().trim();
 
-        if(!TextUtils.isEmpty(eventAddress)){
-            eventLocation = getLocationFromAddress(eventAddress);
-            Log.d(TAG,eventLocation.toString());
-
-            if(eventLocation == null){
-                Toast.makeText(getApplicationContext(),"Please enter valid Event Address", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-        }else{
-            Toast.makeText(getApplicationContext(),"Please enter Event Address", Toast.LENGTH_SHORT).show();
+        if(TextUtils.isEmpty(eventAddress)) {
+            Toast.makeText(getApplicationContext(), "Please enter Event Address", Toast.LENGTH_SHORT).show();
             return false;
         }
 

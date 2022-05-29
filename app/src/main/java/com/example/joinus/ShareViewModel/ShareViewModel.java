@@ -1,4 +1,4 @@
-package com.example.joinus.model;
+package com.example.joinus.ShareViewModel;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

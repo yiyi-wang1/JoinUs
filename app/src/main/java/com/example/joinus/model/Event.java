@@ -1,6 +1,5 @@
 package com.example.joinus.model;
 
-import com.firebase.geofire.core.GeoHash;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 

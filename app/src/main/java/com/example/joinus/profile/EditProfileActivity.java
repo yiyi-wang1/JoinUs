@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.profile;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -6,6 +6,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,11 +21,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.joinus.R;
+import com.example.joinus.Util.Utils;
 import com.example.joinus.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,12 +34,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -84,7 +88,7 @@ public class EditProfileActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                currentUser = Utils.getUserData(uid,getApplicationContext());
+                currentUser = Utils.getUserData(uid);
 
                 //System.out.println(currentUser.getUid());
 
@@ -133,12 +137,29 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void run() {
                 username.setText(currentUser.getUsername());
-                Picasso.get().load(currentUser.getProfileImg()).into(profileImage);
+
+                if(currentUser.getProfileImg().equals(Utils.DEFAULTIMAGE)){
+                    AssetManager assetManager = getAssets();
+                    InputStream instr = null;
+                    try {
+                        instr = assetManager.open("defaultProfile.png");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Bitmap bitmap = BitmapFactory.decodeStream(instr);
+                    try {
+                        instr.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    profileImage.setImageBitmap(bitmap);
+                }else{
+                    Picasso.get().load(currentUser.getProfileImg()).into(profileImage);
+                }
 
                 for(String topic : Utils.TOPICS){
                     addChip(topic);
                 }
-
             }
         });
     }
@@ -198,7 +219,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         transaction.update(userRef, "profileImg", updateImgUri.toString());
                     }
                     if(updateInterested != null){
-                        List<String> aList = new ArrayList<String>(updateInterested);
+                        List<String> aList = new ArrayList<>(updateInterested);
                         transaction.update(userRef, "interestedTopics",aList);
 
                         //subscribe to topics

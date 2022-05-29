@@ -3,12 +3,13 @@ package com.example.joinus;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.ui.BottomNavigationViewKt;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.EditText;
 
+import com.example.joinus.home.HomeFragment;
+import com.example.joinus.profile.ProfileFragment;
+import com.example.joinus.search.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.accountFragment:
-                        selected = new AccountFragment();
+                        selected = new ProfileFragment();
                         break;
                 }
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, selected).commit();

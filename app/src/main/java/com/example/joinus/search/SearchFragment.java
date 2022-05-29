@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.search;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -34,10 +34,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.joinus.adapter.CardRecyclerAdapter;
-import com.example.joinus.adapter.OnItemClickListener;
+import com.example.joinus.R;
+import com.example.joinus.Util.Utils;
+import com.example.joinus.View.adapter.CardRecyclerAdapter;
+import com.example.joinus.View.adapter.OnItemClickListener;
 import com.example.joinus.model.Event;
-import com.example.joinus.model.ShareViewModel;
+import com.example.joinus.ShareViewModel.ShareViewModel;
 import com.example.joinus.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;

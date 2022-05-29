@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.Util;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -47,37 +47,12 @@ public class Utils {
 
     public static final String TAG = "Utils";
     public static final String DEFAULTIMAGE = "DEFAULTIMAGE";
-    public static final String USER_ERROR = "The user does not exists";
     public static final String[] TOPICS = new String[]{"Music", "Sports"};
 
-    public final static User getUserData (String uid, Context context){
+    public final static User getUserData (String uid){
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference reference = database.collection("users").document(uid);
         User currentUser = new User();
-//        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot snapshot = task.getResult();
-//                    //Log.d(TAG, "DocumentSnapshot data: " + task.getResult().toString());
-//                    if (snapshot.exists()) {
-//                        //Log.d(TAG, "DocumentSnapshot data: " + snapshot.getData());
-//                        currentUser.setUid(uid);
-//                        currentUser.setUsername(snapshot.getData().get("username").toString());
-//                        currentUser.setEmail(snapshot.getData().get("email").toString());
-//                        currentUser.setProfileImg(snapshot.getData().get("profileImg").toString());
-//                        currentUser.setVerified((boolean) snapshot.getData().get("verified"));
-//                        currentUser.setLocation((GeoPoint) snapshot.getData().get("location"));
-//                        currentUser.setChatList((List<String>) snapshot.getData().get("chatList"));
-//                        currentUser.setInterestedTopics((List<String>) snapshot.getData().get("interestedTopics"));
-//                    } else {
-//                        Log.d(TAG, "No such document");
-//                    }
-//                } else {
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                }
-//            }
-//        });
 
         reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -87,6 +62,7 @@ public class Utils {
                     return;
                 }
 
+                //get the user information from database
                 if (snapshot != null && snapshot.exists()) {
                     currentUser.setUid(uid);
                     currentUser.setUsername(snapshot.getData().get("username").toString());
@@ -95,44 +71,33 @@ public class Utils {
                     currentUser.setVerified((boolean) snapshot.getData().get("verified"));
                     currentUser.setLocation((GeoPoint) snapshot.getData().get("location"));
                     currentUser.setInterestedTopics((List<String>) snapshot.getData().get("interestedTopics"));
-                } else {
-                    Log.d(TAG, "Current data: null");
-                }
-            }
-        });
 
-        //get the event list
-        List<Event> eventList = new ArrayList<>();
-        Query query = database.collection("users").document(uid).collection("events").orderBy("eventDate");
-//        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                        Event event = document.toObject(Event.class);
-//                        eventList.add(event);
-//                        Log.d(TAG + "test", document.getId() + " => " + document.getData());
-//                    }
-//                }
-//            }
-//        });
+                    //get the saved event list
+                    List<Event> eventList = new ArrayList<>();
+                    Query query = database.collection("users").document(uid).collection("events").orderBy("eventDate");
 
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.w(TAG, "Listen failed.", error);
-                    return;
-                }
+                    query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                            if (error != null) {
+                                Log.w(TAG, "Listen failed.", error);
+                                return;
+                            }
 
-                if (snapshot != null) {
-                    for (QueryDocumentSnapshot document : snapshot) {
-                        Event event = document.toObject(Event.class);
-                        eventList.add(event);
-                        Log.d(TAG + "test", event.getEventName());
-                    }
-                    currentUser.setEventList(eventList);
-                    Log.d(TAG + "eventlist", eventList.toString());
+                            if (snapshot != null) {
+                                for (QueryDocumentSnapshot document : snapshot) {
+                                    Event event = document.toObject(Event.class);
+                                    eventList.add(event);
+                                    Log.d(TAG + "test", event.getEventName());
+                                }
+                                currentUser.setEventList(eventList);
+                                Log.d(TAG + "eventlist", eventList.toString());
+                            } else {
+                                Log.d(TAG, "Current data: null");
+                            }
+                        }
+                    });
+
                 } else {
                     Log.d(TAG, "Current data: null");
                 }
@@ -158,6 +123,21 @@ public class Utils {
                 public Void apply(Transaction transaction) throws FirebaseFirestoreException {
                     DocumentSnapshot snapshot = transaction.get(userRef);
                     transaction.update(userRef, "fcmToken", refreshedToken);
+                    userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    updateSubscriptionWithNewToken((List)document.getData().get("interestedTopics"));
+                                } else {
+                                    Log.d(TAG, "No such document");
+                                }
+                            } else {
+                                Log.d(TAG, "get failed with ", task.getException());
+                            }
+                        }
+                    });
                     return null;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -175,6 +155,37 @@ public class Utils {
         }
     }
 
+    public static void updateSubscriptionWithNewToken(List<String> list){
+        for(String topic: list){
+            FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "You subscribed " + topic;
+                            if (!task.isSuccessful()) {
+                                msg = "Failed to subscribe " + topic;
+                            }
+                            Log.d(TAG, msg);
+                        }
+                    });
+        }
+
+        for(String unsubscribed: Utils.TOPICS){
+            if(!list.contains(unsubscribed)){
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(unsubscribed)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                String msg = "You unsubscribed " + unsubscribed;
+                                if (!task.isSuccessful()) {
+                                    msg = "Failed to unsubscribe " + unsubscribed;
+                                }
+                                Log.d(TAG, msg);
+                            }
+                        });
+            }
+        }
+    }
 
     public static void resetSubscription (List<String> list, Context context){
 

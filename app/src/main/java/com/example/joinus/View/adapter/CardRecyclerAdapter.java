@@ -1,9 +1,8 @@
-package com.example.joinus.adapter;
+package com.example.joinus.View.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.joinus.R;
-import com.example.joinus.Utils;
+import com.example.joinus.Util.Utils;
 import com.example.joinus.model.Event;
 import com.squareup.picasso.Picasso;
 

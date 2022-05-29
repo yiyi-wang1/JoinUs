@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.joinus.MainActivity;
 import com.example.joinus.R;
-import com.example.joinus.Utils;
+import com.example.joinus.Util.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

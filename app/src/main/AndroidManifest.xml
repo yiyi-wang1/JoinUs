@@ -25,16 +25,16 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".CreateEventActivity"
+            android:name=".home.CreateEventActivity"
             android:exported="false" />
         <activity
-            android:name=".EventDetailActivity"
+            android:name=".search.EventDetailActivity"
             android:exported="true" />
         <activity
-            android:name=".SearchResultActivity"
+            android:name=".search.SearchResultActivity"
             android:exported="false" />
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".profile.EditProfileActivity"
             android:exported="false" />
         <activity
             android:name=".login.RegisterActivity"
@@ -53,7 +53,7 @@
         </activity>
 
         <service
-            android:name=".FCMService"
+            android:name=".service.FCMService"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

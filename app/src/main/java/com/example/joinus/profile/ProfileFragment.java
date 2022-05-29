@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.profile;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -20,6 +20,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.joinus.R;
+import com.example.joinus.Util.Utils;
 import com.example.joinus.login.LoginActivity;
 import com.example.joinus.model.User;
 import com.google.android.material.chip.Chip;
@@ -32,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class AccountFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
     Button logout_btn;
     TextView username;
@@ -52,7 +55,7 @@ public class AccountFragment extends Fragment {
     public static final String EMAIL = "email address: ";
     public static final String LOCATION = "location: ";
 
-    public AccountFragment() {
+    public ProfileFragment() {
         // Required empty public constructor
     }
 
@@ -113,10 +116,7 @@ public class AccountFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //Log.e("thread download", "test");
-                currentUser = Utils.getUserData(uid,getContext());
-
-                //System.out.println(currentUser.getUid());
+                currentUser = Utils.getUserData(uid);
 
                 while(currentUser.getUid() == null){
                     try {
