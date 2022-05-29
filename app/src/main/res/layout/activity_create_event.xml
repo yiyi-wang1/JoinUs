@@ -18,9 +18,9 @@
             android:id="@+id/create_event_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create A New Event"
+            android:text="@string/create_a_new_event"
             android:textAlignment="center"
-            android:textSize="30dp"
+            android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,8 +32,9 @@
             android:id="@+id/create_event_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Event Name"
-            android:textSize="20dp"
+            android:hint="@string/enter_event_name"
+            android:textSize="20sp"
+            android:inputType="text"
             android:singleLine="true"
             app:layout_constraintTop_toBottomOf="@+id/create_event_text"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,8 +45,8 @@
             android:id="@+id/create_event_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Click to select Date"
-            android:textSize="20dp"
+            android:text="@string/click_to_select_date"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/create_event_name"
             android:layout_marginTop="20dp">
         </TextView>
@@ -54,8 +55,8 @@
             android:id="@+id/create_event_date_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Click to select Time"
-            android:textSize="20dp"
+            android:text="@string/click_to_select_time"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/create_event_date"
             android:layout_marginTop="5dp">
         </TextView>
@@ -64,8 +65,9 @@
             android:id="@+id/create_event_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Event Description"
-            android:textSize="20dp"
+            android:inputType="text"
+            android:hint="@string/enter_event_description"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/create_event_date_time"
             android:layout_marginTop="20dp">
         </EditText>
@@ -74,8 +76,9 @@
             android:id="@+id/create_event_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Event Location"
-            android:textSize="20dp"
+            android:inputType="text"
+            android:hint="@string/enter_event_location"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/create_event_description"
             android:layout_marginTop="20dp">
         </EditText>
@@ -119,8 +122,8 @@
             android:id="@+id/create_event_topic_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Topic: "
-            android:textSize="20dp"
+            android:text="@string/select_topic"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/create_event_img"
             android:layout_marginTop="20dp">
         </TextView>
@@ -137,8 +140,8 @@
                 android:id="@+id/create_event_topic_music"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Music"
-                android:textSize="20dp"
+                android:text="@string/music"
+                android:textSize="20sp"
                 android:layout_marginStart="20dp">
             </RadioButton>
 
@@ -146,8 +149,8 @@
                 android:id="@+id/create_event_topic_sports"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Sports"
-                android:textSize="20dp"
+                android:text="@string/sports"
+                android:textSize="20sp"
                 android:layout_marginStart="50dp">
             </RadioButton>
         </RadioGroup>
@@ -156,7 +159,7 @@
             android:id="@+id/create_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create!"
+            android:text="@string/create"
             app:layout_constraintTop_toBottomOf="@+id/create_event_topic"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -10,4 +10,24 @@
     <string name="search">Search</string>
     <string name="chat">Chat</string>
     <string name="account">Account</string>
+    <string name="logout">logout</string>
+    <string name="pofile">Pofile</string>
+    <string name="email_address">email address:</string>
+    <string name="location">location:</string>
+    <string name="interests">interests:</string>
+    <string name="create_a_new_event">Create A New Event</string>
+    <string name="enter_event_name">Enter Event Name</string>
+    <string name="click_to_select_date">Click to select Date</string>
+    <string name="click_to_select_time">Click to select Time</string>
+    <string name="enter_event_description">Enter Event Description</string>
+    <string name="enter_event_location">Enter Event Location</string>
+    <string name="select_topic">Select Topic:</string>
+    <string name="music">Music</string>
+    <string name="sports">Sports</string>
+    <string name="create">Create!</string>
+    <string name="search_event_here">Search event here</string>
+    <string name="your_location_n_a">Your Location: N/A</string>
+    <string name="get_location">GET LOCATION</string>
+    <string name="hot_events_now">Hot Events Now</string>
+    <string name="events_by_topics">Events by Topics</string>
 </resources>
