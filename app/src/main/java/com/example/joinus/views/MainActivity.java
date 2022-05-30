@@ -1,4 +1,4 @@
-package com.example.joinus;
+package com.example.joinus.views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,9 +7,10 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.joinus.home.HomeFragment;
-import com.example.joinus.profile.ProfileFragment;
-import com.example.joinus.search.SearchFragment;
+import com.example.joinus.R;
+import com.example.joinus.views.home.HomeFragment;
+import com.example.joinus.views.profile.ProfileFragment;
+import com.example.joinus.views.search.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 

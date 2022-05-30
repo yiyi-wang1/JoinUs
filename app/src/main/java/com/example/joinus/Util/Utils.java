@@ -49,63 +49,6 @@ public class Utils {
     public static final String DEFAULTIMAGE = "DEFAULTIMAGE";
     public static final String[] TOPICS = new String[]{"Music", "Sports"};
 
-    public final static User getUserData (String uid){
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        DocumentReference reference = database.collection("users").document(uid);
-        User currentUser = new User();
-
-        reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.w(TAG, "Listen failed.", error);
-                    return;
-                }
-
-                //get the user information from database
-                if (snapshot != null && snapshot.exists()) {
-                    currentUser.setUid(uid);
-                    currentUser.setUsername(snapshot.getData().get("username").toString());
-                    currentUser.setEmail(snapshot.getData().get("email").toString());
-                    currentUser.setProfileImg(snapshot.getData().get("profileImg").toString());
-                    currentUser.setVerified((boolean) snapshot.getData().get("verified"));
-                    currentUser.setLocation((GeoPoint) snapshot.getData().get("location"));
-                    currentUser.setInterestedTopics((List<String>) snapshot.getData().get("interestedTopics"));
-
-                    //get the saved event list
-                    List<Event> eventList = new ArrayList<>();
-                    Query query = database.collection("users").document(uid).collection("events").orderBy("eventDate");
-
-                    query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                            if (error != null) {
-                                Log.w(TAG, "Listen failed.", error);
-                                return;
-                            }
-
-                            if (snapshot != null) {
-                                for (QueryDocumentSnapshot document : snapshot) {
-                                    Event event = document.toObject(Event.class);
-                                    eventList.add(event);
-                                    Log.d(TAG + "test", event.getEventName());
-                                }
-                                currentUser.setEventList(eventList);
-                                Log.d(TAG + "eventlist", eventList.toString());
-                            } else {
-                                Log.d(TAG, "Current data: null");
-                            }
-                        }
-                    });
-
-                } else {
-                    Log.d(TAG, "Current data: null");
-                }
-            }
-        });
-        return currentUser;
-    }
-
     public static final String formatDate (Date date){
         android.text.format.DateFormat df = new android.text.format.DateFormat();
         return android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", date).toString();
@@ -188,7 +131,6 @@ public class Utils {
     }
 
     public static void resetSubscription (List<String> list, Context context){
-
         for(String topic: list){
             FirebaseMessaging.getInstance().subscribeToTopic(topic)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -224,7 +166,6 @@ public class Utils {
 
     public static String fcmHttpConnection(String serverToken, JSONObject jsonObject) {
         try {
-
             // Open the HTTP connection and send the payload
             URL url = new URL("https://fcm.googleapis.com/fcm/send");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

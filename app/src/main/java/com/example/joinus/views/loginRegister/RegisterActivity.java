@@ -1,28 +1,25 @@
-package com.example.joinus.login;
+package com.example.joinus.views.loginRegister;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.joinus.MainActivity;
+import com.example.joinus.views.MainActivity;
 import com.example.joinus.R;
-import com.example.joinus.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.joinus.viewmodel.LoginRegisterViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -36,10 +33,11 @@ public class RegisterActivity extends AppCompatActivity {
     private String password;
     private String confirmedPassword;
     private String username;
+    private LoginRegisterViewModel loginRegisterViewModel;
     private String fcmToken;
 
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore database;
+//    private FirebaseAuth mAuth;
+//    private FirebaseFirestore database;
 
     public final static String TAG = "REGISTER";
 
@@ -54,11 +52,25 @@ public class RegisterActivity extends AppCompatActivity {
         register_username_text = findViewById(R.id.register_username);
         register_button = findViewById(R.id.register_button);
 
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseFirestore.getInstance();
+
         fcmToken = getIntent().getExtras().getString("fcmToken");
+        loginRegisterViewModel = new ViewModelProvider(this).get(LoginRegisterViewModel.class);
+        loginRegisterViewModel.getUserMutableLiveData().observe(this, new Observer<FirebaseUser>() {
+            @Override
+            public void onChanged(FirebaseUser user) {
+                if(user != null){
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Cannot create new user", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
         register_button.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onClick(View view) {
                 email = register_email_text.getText().toString().trim();
@@ -67,20 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
                 username= register_username_text.getText().toString().trim();
 
                 if(checkDetails(email, password, confirmedPassword, username)){
-                    mAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful()){
-                                        Log.d(TAG,"createUserWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        registerUser(email,username);
-                                    }else{
-                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                        Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                    loginRegisterViewModel.register(email,password,username,fcmToken);
                 }
             }
         });
@@ -120,29 +119,5 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    private void registerUser(String email, String username){
-        String uid = mAuth.getCurrentUser().getUid();
-//        Map<String, Object> user = new HashMap<>();
-//        user.put("email", email);
-//        user.put("username", username);
-//        user.put("uid",uid);
-//        user.put("profileImgUrl", Utils.DEFAULTIMAGE);
-//        user.put("eventList",null);
-//        user.put("chatList",null);
-//        user.put("location",null);
-//        user.put("interestedTopics",null);
-//        user.put("verified",false);
-        User user = new User(email,uid,username,fcmToken);
-        
-        database.collection("users").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
     }
 }

@@ -1,4 +1,4 @@
-package com.example.joinus.View.adapter;
+package com.example.joinus.views.adapter;
 
 import android.content.Context;
 import android.location.Address;
@@ -78,7 +78,7 @@ class ListRecyclerHolder extends RecyclerView.ViewHolder {
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(lat, lon,1);
             String location = addresses.get(0).getAddressLine(0);
-            Log.d("list", location);
+//            Log.d("list", location);
             location_tv.setText(location);
         } catch (IOException e) {
             e.printStackTrace();

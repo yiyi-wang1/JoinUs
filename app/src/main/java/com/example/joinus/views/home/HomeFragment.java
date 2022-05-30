@@ -1,4 +1,4 @@
-package com.example.joinus.home;
+package com.example.joinus.views.home;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +24,11 @@ import android.widget.Toast;
 
 import com.example.joinus.R;
 import com.example.joinus.Util.Utils;
-import com.example.joinus.View.adapter.HomeRecyclerAdapter;
+import com.example.joinus.viewmodel.UserViewModel;
+import com.example.joinus.views.adapter.HomeRecyclerAdapter;
 import com.example.joinus.model.Event;
 import com.example.joinus.ShareViewModel.ShareViewModel;
 import com.example.joinus.model.User;
-import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -39,11 +38,9 @@ public class HomeFragment extends Fragment {
 
     public final static String TAG = "HOME";
 
-    private FirebaseAuth mAuth;
-    private String uid;
     private User currentUser;
-    private Handler handler;
     private ShareViewModel model;
+    private UserViewModel userViewModel;
 
     TextView username_tv;
     ProgressBar pb;
@@ -60,8 +57,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-        uid = mAuth.getCurrentUser().getUid();
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
     }
 
     @Override
@@ -84,27 +80,18 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        handler = new Handler(Looper.getMainLooper());
-        currentUser = null;
         pb.setVisibility(View.VISIBLE);
-
-        new Thread(() -> {
-            currentUser = Utils.getUserData(uid);
-
-            while(currentUser.getUid() == null){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Log.d(TAG, currentUser.toString());
+        userViewModel.getCurrentUserMutableLiveData().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if(user != null){
+                    currentUser = user;
+                    if(currentUser.getUsername() != null && currentUser.getEventList() != null){
+                        initView();
+                    }
                 }
             }
-
-            if(currentUser.getUsername() != null && currentUser.getEventList() != null){
-                initView();
-            }
-
-        }).start();
+        });
 
         creat_event_btn.setOnClickListener(view -> {
             if(!currentUser.isVerified()){
@@ -117,7 +104,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void initView(){
-        handler.post(() -> {
+
             //set the Textview
             username_tv.setText(currentUser.getUsername());
             pb.setVisibility(View.INVISIBLE);
@@ -155,7 +142,6 @@ public class HomeFragment extends Fragment {
             recyclerView.setAdapter(homeRecyclerAdapter);
             recyclerView.setLayoutManager(layoutManager);
 
-        });
     }
 
     /**

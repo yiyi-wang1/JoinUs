@@ -10,7 +10,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.example.joinus.search.EventDetailActivity;
+import com.example.joinus.views.search.EventDetailActivity;
 import com.example.joinus.R;
 import com.example.joinus.Util.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;

@@ -1,4 +1,4 @@
-package com.example.joinus.search;
+package com.example.joinus.views.search;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;

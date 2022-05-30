@@ -1,8 +1,7 @@
-package com.example.joinus.search;
+package com.example.joinus.views.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +69,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         super.onViewCreated(view, savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(ShareViewModelResult.class);
         result = model.getList().getValue();
-        Log.d("test map", result.toString());
+//        Log.d("test map", result.toString());
 
     }
 
@@ -97,7 +96,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     .title(e.getEventName()));
             marker.setTag(e);
         }
-        googleMap.setInfoWindowAdapter(new CustomInfoWindowAdpater());
+        googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
     }
 
     @Override
@@ -111,10 +110,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         startActivity(intent);
     }
 
-    class CustomInfoWindowAdpater implements GoogleMap.InfoWindowAdapter {
+    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         private final View markerview;
 
-        CustomInfoWindowAdpater() {
+        CustomInfoWindowAdapter() {
             markerview = getLayoutInflater()
                     .inflate(R.layout.custom_info_window, null);
         }

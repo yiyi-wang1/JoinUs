@@ -1,4 +1,4 @@
-package com.example.joinus.View.adapter;
+package com.example.joinus.views.adapter;
 
 import com.example.joinus.model.Event;
 

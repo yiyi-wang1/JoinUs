@@ -1,4 +1,4 @@
-package com.example.joinus.profile;
+package com.example.joinus.views.profile;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -11,8 +11,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.os.Handler;
-import android.os.Looper;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,8 @@ import android.widget.TextView;
 
 import com.example.joinus.R;
 import com.example.joinus.Util.Utils;
-import com.example.joinus.login.LoginActivity;
+import com.example.joinus.viewmodel.UserViewModel;
+import com.example.joinus.views.loginRegister.LoginActivity;
 import com.example.joinus.model.User;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -46,10 +48,10 @@ public class ProfileFragment extends Fragment {
     ChipGroup chipGroup;
 
     private FirebaseAuth mAuth;
-    private String uid;
     private User currentUser;
-    private Handler handler;
     private String city;
+    private UserViewModel userViewModel;
+
     public static final String TAG = "AccountFragment";
     public static final String USERNAME = "username: ";
     public static final String EMAIL = "email address: ";
@@ -62,6 +64,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
     }
 
@@ -80,7 +83,6 @@ public class ProfileFragment extends Fragment {
         chipGroup = view.findViewById(R.id.profile_interest_chipGroup);
 
         mAuth = FirebaseAuth.getInstance();
-        uid = mAuth.getCurrentUser().getUid();
         return view;
     }
 
@@ -110,86 +112,70 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        handler = new Handler(Looper.getMainLooper());
-        currentUser = null;
-
-        new Thread(new Runnable() {
+        userViewModel.getCurrentUserMutableLiveData().observe(this, new Observer<User>() {
             @Override
-            public void run() {
-                currentUser = Utils.getUserData(uid);
+            public void onChanged(User user) {
+                if(user != null){
+                    currentUser = user;
+                    if(currentUser.getUsername() != null){
 
-                while(currentUser.getUid() == null){
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if(currentUser.getUsername() != null){
-
-                    if(currentUser.getLocation() == null){
-                        city = "N/A";
-                    }else{
-                        //get the city name from current location
-                        double lat = currentUser.getLocation().getLatitude();
-                        double lon = currentUser.getLocation().getLongitude();
-                        try {
-                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(lat, lon,1);
-                            city = addresses.get(0).getLocality();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if(currentUser.getLocation() == null){
+                            city = "N/A";
+                        }else{
+                            //get the city name from current location
+                            double lat = currentUser.getLocation().getLatitude();
+                            double lon = currentUser.getLocation().getLongitude();
+                            try {
+                                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                                List<Address> addresses = geocoder.getFromLocation(lat, lon,1);
+                                city = addresses.get(0).getLocality();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
+                        initView();
                     }
-                    initView();
-                }
-            }
-        }).start();
-    }
-
-    public void initView(){
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                //set the textView
-                username.setText(USERNAME + currentUser.getUsername());
-                email.setText(EMAIL + currentUser.getEmail());
-
-                if(city == null){
-                    location.setText(LOCATION + "Cannot get location");
-                }else{
-                    location.setText(LOCATION + city);
-                }
-
-                //set the ImageView
-                if(currentUser.getProfileImg().equals(Utils.DEFAULTIMAGE)){
-                    AssetManager assetManager = getContext().getAssets();
-                    InputStream instr = null;
-                    try {
-                        instr = assetManager.open("defaultProfile.png");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Bitmap bitmap = BitmapFactory.decodeStream(instr);
-                    try {
-                        instr.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    profileImg.setImageBitmap(bitmap);
-                }else{
-                    Picasso.get().load(currentUser.getProfileImg()).into(profileImg);
-                }
-
-                //set the chipView
-                for(String topic : currentUser.getInterestedTopics()){
-                    addChip(topic);
                 }
             }
         });
+    }
+
+    public void initView(){
+        //set the textView
+        username.setText(USERNAME + currentUser.getUsername());
+        email.setText(EMAIL + currentUser.getEmail());
+
+        if(city == null){
+            location.setText(LOCATION + "Cannot get location");
+        }else{
+            location.setText(LOCATION + city);
+        }
+
+        //set the ImageView
+        if(currentUser.getProfileImg().equals(Utils.DEFAULTIMAGE)){
+            AssetManager assetManager = getContext().getAssets();
+            InputStream instr = null;
+            try {
+                instr = assetManager.open("defaultProfile.png");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = BitmapFactory.decodeStream(instr);
+            try {
+                instr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            profileImg.setImageBitmap(bitmap);
+        }else{
+            Picasso.get().load(currentUser.getProfileImg()).into(profileImg);
+        }
+
+        //set the chipView
+        chipGroup.removeAllViews();
+        for(String topic : currentUser.getInterestedTopics()){
+            addChip(topic);
+        }
     }
 
     private void addChip(String value){

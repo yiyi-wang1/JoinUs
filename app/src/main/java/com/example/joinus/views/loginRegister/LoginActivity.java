@@ -1,7 +1,9 @@
-package com.example.joinus.login;
+package com.example.joinus.views.loginRegister;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,12 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.joinus.MainActivity;
+import com.example.joinus.views.MainActivity;
 import com.example.joinus.R;
-import com.example.joinus.Util.Utils;
+import com.example.joinus.viewmodel.LoginRegisterViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -32,28 +33,27 @@ public class LoginActivity extends AppCompatActivity {
     TextView register_text;
     ProgressBar progressBar;
 
-    public final static String LOGIN_SUCCESS = "Login Successfully!";
-    public final static String LOGIN_FAILED = "Invalid username or password. Please check!";
-    public final static String TAG = "REGISTER";
+    public final static String TAG = "LOGIN";
 
     private String user_email;
     private String user_password;
     private String fcmToken;
     private FirebaseAuth mAuth;
+    private LoginRegisterViewModel loginRegisterViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
-
+        //get the view
         email_text = findViewById(R.id.login_email);
         password_text = findViewById(R.id.login_password);
         login_btn = findViewById(R.id.login_button);
         register_text = findViewById(R.id.login_register_txt);
         progressBar = findViewById(R.id.login_pb);
 
+        //get the current token from device
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -69,6 +69,29 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+        //Update UI
+        loginRegisterViewModel = new ViewModelProvider(this).get(LoginRegisterViewModel.class);
+        loginRegisterViewModel.getUserMutableLiveData().observe(this, new Observer<FirebaseUser>() {
+            @Override
+            public void onChanged(FirebaseUser user) {
+                if(user != null){
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+        loginRegisterViewModel.getIsLoggingMutableLiveData().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(!aBoolean){
+                    progressBar.setVisibility(View.INVISIBLE);
+                    login_btn.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        //Login User
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,28 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(checkDetails(user_email, user_password)){
                         progressBar.setVisibility(View.VISIBLE);
                         login_btn.setVisibility(View.INVISIBLE);
-                        mAuth.signInWithEmailAndPassword(user_email, user_password)
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            // Sign in success, update UI with the signed-in user's information
-                                            Log.d(TAG, "signInWithEmail:success");
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            Toast.makeText(LoginActivity.this,LOGIN_SUCCESS, Toast.LENGTH_SHORT).show();
-                                            Utils.updateToken(fcmToken);
-                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        } else {
-                                            // If sign in fails, display a message to the user.
-                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                            Toast.makeText(LoginActivity.this,LOGIN_FAILED, Toast.LENGTH_SHORT).show();
-                                            progressBar.setVisibility(View.INVISIBLE);
-                                            login_btn.setVisibility(View.VISIBLE);
-                                        }
-                                    }
-                                });
+                        loginRegisterViewModel.login(user_email,user_password, fcmToken);
                     }
             }
         });
@@ -114,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //Check input
     private boolean checkDetails(String email, String password){
         if(TextUtils.isEmpty(email)){
             Toast.makeText(LoginActivity.this,"The username is invalid.", Toast.LENGTH_SHORT).show();

@@ -1,11 +1,12 @@
-package com.example.joinus.home;
+package com.example.joinus.views.home;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -32,22 +33,15 @@ import android.widget.Toast;
 import com.example.joinus.R;
 import com.example.joinus.Util.Utils;
 import com.example.joinus.model.Event;
-import com.firebase.geofire.GeoFireUtils;
-import com.firebase.geofire.GeoLocation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.joinus.viewmodel.EventViewModel;
+import com.example.joinus.viewmodel.ImageViewModel;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,41 +57,29 @@ public class CreateEventActivity extends AppCompatActivity {
     private static String SERVER_KEY;
     private static String API_KEY;
 
-
     EditText eventName_tv, eventDescription_tv, eventLocation_tv;
     TextView eventDate_tv, eventTime_tv;
     ImageView eventImg;
     ProgressBar pb;
     Button create_btn;
-    RadioGroup rg;
+    RadioGroup radioGroup;
 
     private Calendar calendar1;
     private boolean selectedDate, selectedTime;
     private GeoPoint eventLocation;
     private String eventTopic;
-    UUID uuid;
-    Uri imgURi;
+    private UUID uuid;
+    private Uri imgURi;
+    private ImageViewModel imageViewModel;
+    private EventViewModel eventViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-        // Initialize the SDK
-        try {
-            ApplicationInfo ai = getPackageManager().getApplicationInfo(getApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
-            Bundle bundle = ai.metaData;
-            API_KEY = bundle.getString("com.google.android.geo.API_KEY");
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
-        }
-
-        Places.initialize(getApplicationContext(), API_KEY);
-
-        // Create a new PlacesClient instance
-        PlacesClient placesClient = Places.createClient(this);
+        //uuid for the event id
+        uuid = UUID.randomUUID();
 
         eventName_tv = findViewById(R.id.create_event_name);
         eventDescription_tv = findViewById(R.id.create_event_description);
@@ -107,10 +89,27 @@ public class CreateEventActivity extends AppCompatActivity {
         eventImg = findViewById(R.id.create_event_img);
         pb = findViewById(R.id.create_event_img_pb);
         create_btn = findViewById(R.id.create_event);
-        rg = findViewById(R.id.create_event_topic);
+        radioGroup = findViewById(R.id.create_event_topic);
 
-        uuid = UUID.randomUUID();
+        // Initialize the Place SDK
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            API_KEY = bundle.getString("com.google.android.geo.API_KEY");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+        }
+        Places.initialize(getApplicationContext(), API_KEY);
+        // Create a new PlacesClient instance
+        PlacesClient placesClient = Places.createClient(this);
 
+        //ViewModel
+        imageViewModel = new ViewModelProvider(this).get(ImageViewModel.class);
+        eventViewModel = new ViewModelProvider(this).get(EventViewModel.class);
+
+        //Select Date and Time
         selectedDate = false;
         selectedTime = false;
 
@@ -131,6 +130,7 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+        //Get the location information
         eventLocation_tv.setFocusable(false);
         eventLocation_tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,10 +143,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 // Start the autocomplete intent.
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                         .build(CreateEventActivity.this);
-                autocomplteLauncher.launch(intent);
+                autocompleteLauncher.launch(intent);
             }
         });
 
+        //Select the image
         eventImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,7 +155,8 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        //Select the Topic from radio group
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId){
                     case R.id.create_event_topic_music:
@@ -167,36 +169,22 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+        //Create event
         create_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(checkInfo()){
 
-                    FirebaseFirestore database = FirebaseFirestore.getInstance();
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
                     //get the eventInfo
-                    String currentUserId = mAuth.getCurrentUser().getUid();
                     String eventId = uuid.toString();
                     String eventName = eventName_tv.getText().toString().trim();
                     String eventDescription = eventDescription_tv.getText().toString().trim();
-                    String hash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(eventLocation.getLatitude(), eventLocation.getLongitude()));
 
-                    Event newEvent = new Event(eventId, eventName,
-                            eventLocation, currentUserId ,new Timestamp(calendar1.getTime()),imgURi.toString(),1,eventTopic, eventDescription, hash);
-
-                    database.collection("events").document(eventId).set(newEvent).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    eventViewModel.createEvent(eventId,eventName,eventLocation,new Timestamp(calendar1.getTime()),imgURi.toString(),eventTopic,eventDescription);
+                    eventViewModel.getEventMutableLiveData().observe(CreateEventActivity.this, new Observer<Event>() {
                         @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(getApplicationContext(),"Create Event Successfully!", Toast.LENGTH_SHORT).show();
-                            Event newEvent1 = new Event(eventId, eventName, eventLocation, new Timestamp(calendar1.getTime()), imgURi.toString());
-                            sendEventNotification(eventTopic,eventId,eventName);
-                            database.collection("users").document(currentUserId).collection("events").document(eventId).set(newEvent1).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(getApplicationContext(),"Add Event Successfully!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                        public void onChanged(Event event) {
+                            sendEventNotification(event.getEventTopic(),event.getEventId(),event.getEventName());
                         }
                     });
                 }
@@ -204,7 +192,8 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    ActivityResultLauncher<Intent> autocomplteLauncher = registerForActivityResult(
+    //Start the auto-complete fragment
+    ActivityResultLauncher<Intent> autocompleteLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -215,12 +204,12 @@ public class CreateEventActivity extends AppCompatActivity {
                         //set the location
                         eventLocation_tv.setText(place.getAddress());
                         eventLocation = new GeoPoint(place.getLatLng().latitude,place.getLatLng().longitude);
-//                        Log.d(TAG+"Location:", eventLocation.toString());
                     }
                 }
             });
 
 
+    //Start the content selection
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
@@ -233,36 +222,31 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
     private void uploadImg(){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference reference = storage.getReference();
-        StorageReference profileReference = reference.child("images/" + uuid);
-
         if(imgURi != null){
-          create_btn.setClickable(false);
+            create_btn.setClickable(false);
             pb.setVisibility(View.VISIBLE);
-            profileReference.putFile(imgURi)
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            Toast.makeText(getApplicationContext(),"Cannot Upload", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            profileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    imgURi = uri;
-                                    pb.setVisibility(View.INVISIBLE);
-                                    create_btn.setClickable(true);
-                                }
-                            });
-                        }
+            imageViewModel.uploadImg(uuid,imgURi);
+            imageViewModel.getUriMutableLiveData().observe(this, new Observer<Uri>() {
+                @Override
+                public void onChanged(Uri uri) {
+                    if(uri != null){
+                        imgURi = uri;
+                    }
+                }
+            });
+            imageViewModel.getIsLoadingMutableLiveData().observe(this, new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean aBoolean) {
+                    if(!aBoolean){
+                        pb.setVisibility(View.INVISIBLE);
+                        create_btn.setClickable(true);
+                    }
+                }
             });
         }
     }
 
+    //Show the Date Dialog
     private void showDatePickerDialog(){
         Calendar calendar = Calendar.getInstance();
         int YEAR = calendar.get(Calendar.YEAR);
@@ -285,6 +269,7 @@ public class CreateEventActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    //Show the Time Dialog
     private void showTimePickerDialog(){
         Calendar calendar = Calendar.getInstance();
         int HOUR = calendar.get(Calendar.HOUR);
@@ -304,6 +289,7 @@ public class CreateEventActivity extends AppCompatActivity {
         timePickerDialog.show();
     }
 
+    //Helper method to check input
     private boolean checkInfo(){
         String eventAddress = eventLocation_tv.getText().toString().trim();
 
@@ -341,7 +327,6 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void sendEventNotification(String eventTopic,String eventId,String eventName){
-
         // Prepare data
         JSONObject jPayload = new JSONObject();
         JSONObject jdata = new JSONObject();
