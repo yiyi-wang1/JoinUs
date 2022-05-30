@@ -372,8 +372,5 @@ public class CreateEventActivity extends AppCompatActivity {
                 Utils.postToastMessage("Status from Server: " + resp, getApplicationContext());
             }
         }).start();
-
     }
-
-
 }

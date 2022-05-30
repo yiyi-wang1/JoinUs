@@ -65,8 +65,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         // Get new FCM registration token
                         fcmToken = task.getResult();
-
-                        // Log and toast
                         Log.d(TAG + "token", fcmToken);
                     }
                 });
@@ -87,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                                             // Sign in success, update UI with the signed-in user's information
                                             Log.d(TAG, "signInWithEmail:success");
                                             FirebaseUser user = mAuth.getCurrentUser();
-                                            Toast.makeText(getApplicationContext(),LOGIN_SUCCESS, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(LoginActivity.this,LOGIN_SUCCESS, Toast.LENGTH_SHORT).show();
                                             Utils.updateToken(fcmToken);
                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                             startActivity(intent);
@@ -95,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                                         } else {
                                             // If sign in fails, display a message to the user.
                                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                            Toast.makeText(getApplicationContext(),LOGIN_FAILED, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(LoginActivity.this,LOGIN_FAILED, Toast.LENGTH_SHORT).show();
                                             progressBar.setVisibility(View.INVISIBLE);
                                             login_btn.setVisibility(View.VISIBLE);
                                         }
@@ -118,11 +116,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkDetails(String email, String password){
         if(TextUtils.isEmpty(email)){
-            Toast.makeText(getApplicationContext(),"The username is invalid.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,"The username is invalid.", Toast.LENGTH_SHORT).show();
             return false;
         }
         if(TextUtils.isEmpty(password)){
-            Toast.makeText(getApplicationContext(),"Please enter password and confirmed password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,"Please enter password and confirmed password.", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
