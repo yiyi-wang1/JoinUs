@@ -176,37 +176,55 @@ public class SearchFragment extends Fragment {
         database = FirebaseFirestore.getInstance();
         progressBar.setVisibility(View.VISIBLE);
         setView();
-            eventViewModel.getHotEventList();
-            eventViewModel.getHotEventListMutableLiveData().observe(this, new Observer<List<Event>>() {
-                @Override
-                public void onChanged(List<Event> events) {
-                    if(events != null){
-                        topList = events;
-                        setRecyclerView(layoutManager, recyclerView, cardRecyclerAdapter,topList);
-                    }
+        eventViewModel.getHotEventList();
+        eventViewModel.getHotEventListMutableLiveData().observe(this, new Observer<List<Event>>() {
+            @Override
+            public void onChanged(List<Event> events) {
+                if(events != null){
+                    topList = events;
+                    setRecyclerView(layoutManager, recyclerView, cardRecyclerAdapter,topList);
                 }
-            });
-            eventViewModel.getTopicList(Utils.TOPICS[0]);
-            eventViewModel.getTopic1EventListMutableLiveData().observe(this, new Observer<List<Event>>() {
-                @Override
-                public void onChanged(List<Event> events) {
-                    if(events != null){
-                        topicList1 = events;
-                        setRecyclerView(topicLayoutManager1, topicRecyclerView1, topicRecyclerAdapter1,topicList1);
-                    }
+            }
+        });
+        eventViewModel.getTopicList(Utils.TOPICS[0]);
+        eventViewModel.getTopic1EventListMutableLiveData().observe(this, new Observer<List<Event>>() {
+            @Override
+            public void onChanged(List<Event> events) {
+                if(events != null){
+                    topicList1 = events;
+                    setRecyclerView(topicLayoutManager1, topicRecyclerView1, topicRecyclerAdapter1,topicList1);
                 }
-            });
-            eventViewModel.getTopicList(Utils.TOPICS[1]);
-            eventViewModel.getTopic2EventListMutableLiveData().observe(this, new Observer<List<Event>>() {
-                @Override
-                public void onChanged(List<Event> events) {
-                    if(events != null){
-                        topicList2 = events;
-                        setRecyclerView(topicLayoutManager2, topicRecyclerView2, topicRecyclerAdapter2,topicList2);
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
+            }
+        });
+        eventViewModel.getTopicList(Utils.TOPICS[1]);
+        eventViewModel.getTopic2EventListMutableLiveData().observe(this, new Observer<List<Event>>() {
+            @Override
+            public void onChanged(List<Event> events) {
+                if(events != null){
+                    topicList2 = events;
+                    setRecyclerView(topicLayoutManager2, topicRecyclerView2, topicRecyclerAdapter2,topicList2);
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
-            });
+            }
+        });
+        locationViewModel.getLocationMutableLiveData().observe(this, new Observer<Location>() {
+            @Override
+            public void onChanged(Location location) {
+                if(location != null){
+                    double lat = location.getLatitude();
+                    double lon = location.getLongitude();
+                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                    List<Address> addresses = null;
+                    try {
+                        addresses = geocoder.getFromLocation(lat, lon,1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    search_location_tv.setText(LOCATION + addresses.get(0).getLocality());
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,24 +259,6 @@ public class SearchFragment extends Fragment {
     private void getLocation() {
         progressBar.setVisibility(View.VISIBLE);
         locationViewModel.getLocation();
-        locationViewModel.getLocationMutableLiveData().observe(this, new Observer<Location>() {
-            @Override
-            public void onChanged(Location location) {
-                if(location != null){
-                    double lat = location.getLatitude();
-                    double lon = location.getLongitude();
-                    Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                    List<Address> addresses = null;
-                    try {
-                        addresses = geocoder.getFromLocation(lat, lon,1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    search_location_tv.setText(LOCATION + addresses.get(0).getLocality());
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
     }
 
 

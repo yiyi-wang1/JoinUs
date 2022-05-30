@@ -187,6 +187,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             sendEventNotification(event.getEventTopic(),event.getEventId(),event.getEventName());
                         }
                     });
+                    finish();
                 }
             }
         });

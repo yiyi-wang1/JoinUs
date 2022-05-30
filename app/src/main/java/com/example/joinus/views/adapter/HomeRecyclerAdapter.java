@@ -47,11 +47,9 @@ class HomeRecyclerHolder extends RecyclerView.ViewHolder{
     public TextView name;
     public TextView date;
 
-
     public HomeRecyclerHolder(View itemView){
         super(itemView);
         date = itemView.findViewById(R.id.event_time_tv);
         name = itemView.findViewById(R.id.event_name_tv);
     }
-
 }

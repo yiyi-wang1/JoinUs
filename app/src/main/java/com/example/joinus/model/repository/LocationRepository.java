@@ -54,7 +54,7 @@ public class LocationRepository {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(application);
         LocationCallback callback;
         LocationRequest request = LocationRequest.create();
-        request.setInterval(10000);
+        request.setInterval(5000);
         request.setFastestInterval(3000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
@@ -66,18 +66,12 @@ public class LocationRepository {
                 if (location != null){
                     double lat = location.getLatitude();
                     double lon = location.getLongitude();
-//                    try {
-//                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-//                        List<Address> addresses = geocoder.getFromLocation(lat, lon,1);
-//                        search_location_tv.setText(LOCATION + addresses.get(0).getLocality());
-
                     DocumentReference userRef = database.collection("users").document(mAuth.getCurrentUser().getUid());
                     database.runTransaction(new Transaction.Function<Void>() {
                         @Override
                         public Void apply(Transaction transaction) throws FirebaseFirestoreException {
                             DocumentSnapshot snapshot = transaction.get(userRef);
                             transaction.update(userRef, "location", new GeoPoint(lat,lon));
-//                                progressBar.setVisibility(View.INVISIBLE);
                             return null;
                         }
                     }).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -93,10 +87,6 @@ public class LocationRepository {
                         }
                     });
                     fusedLocationClient.removeLocationUpdates(this);
-//
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
                 }
             }
         };
